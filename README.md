@@ -1,84 +1,190 @@
 # Erika Espíndola — Site Institucional
 
-Site profissional para Erika Espíndola, terapeuta pós-graduada em Psicologia Analítica Junguiana, com atendimento presencial em Goiânia e online.
+Site institucional com painel administrativo para edição de conteúdo.
 
-## Estrutura de arquivos
+---
 
-```text
-/
-├── index.html
-├── privacy.html
-├── terms.html
-├── styles.css
-├── script.js
-├── manifest.json
-├── sw.js
-├── README.md
+## Estrutura de Arquivos
+
+```
+├── index.html              # Site público principal
+├── styles.css              # Estilos do site público
+├── script.js               # Scripts do site público
+├── cms-defaults.js         # Conteúdo padrão (fallback)
+├── cms-loader.js           # Aplica conteúdo CMS ao site público
+├── legal-loader.js         # Aplica textos legais editados em terms/privacy
+├── admin.html              # Painel administrativo
+├── admin.css               # Estilos do painel admin
+├── admin.js                # Scripts do painel admin
+├── firebase-config.js      # Configuração local do Firebase (fallback seguro vazio)
+├── firebase-config.example.js  # Modelo de configuração do Firebase
+├── manifest.json           # PWA manifest
+├── sw.js                   # Service Worker (v3)
+├── privacy.html            # Política de Privacidade
+├── terms.html              # Termos de Uso
 └── assets/
-    ├── img/
-    │   ├── erika-hero.jpg
-    │   ├── erika-experiencia.jpg
-    │   ├── espaco-consultorio.jpg
-    │   ├── espaco-jardim.jpg
-    │   ├── espaco-sala.jpg
-    │   ├── decorativo-diario.png
-    │   └── decorativo-agua.png
-    └── icons/
-        ├── favicon.png
-        ├── icon-192.png
-        └── icon-512.png
+    ├── img/                # Imagens do site
+    └── icons/              # Ícones PWA
 ```
 
-## Como trocar o WhatsApp
+---
 
-O número está centralizado em `script.js`:
+## Acesso ao Painel Admin
+
+1. Acesse `/admin.html`
+2. Usuário: `erika`
+3. Senha: `223687`
+
+> ⚠️ **AVISO DE SEGURANÇA**: Login hardcoded não é seguro para produção. Esse login é uma proteção básica de interface.
+> Qualquer pessoa que inspecionar o código-fonte pode ver as credenciais.
+> Para produção real, implemente Firebase Authentication conforme descrito abaixo.
+
+### Como trocar o usuário/senha
+
+Edite as primeiras linhas do arquivo `admin.js`:
 
 ```js
-const WHATSAPP_NUMBER = "5562999999999";
+const ADMIN_CREDENTIALS = {
+  user: 'erika',   // ← altere aqui
+  pass: '223687'   // ← altere aqui
+};
 ```
 
-Troque apenas esse valor pelo número real com código do país e DDD, sem `+`, espaços ou pontuação.
+---
 
-## Como confirmar o CRP
+## Configuração do Firebase (recomendado para produção)
 
-O rodapé usa o placeholder `CRP a confirmar — Goiânia, GO`. Quando o número estiver confirmado, atualize esse texto no `index.html`. Não afirme título profissional regulamentado nem exiba CRP sem confirmação.
+Para que as edições do admin apareçam para todos os visitantes (não apenas no mesmo navegador), configure o Firebase:
 
-## Como trocar imagens e ícones
+### 1. Crie um projeto no Firebase Console
 
-Substitua os arquivos mantendo os mesmos nomes e pastas:
+Acesse: https://console.firebase.google.com
 
-- Imagens do site: `assets/img/`
-- Ícones e favicon: `assets/icons/`
+### 2. Ative Firestore e Storage
 
-Se alterar nomes de arquivos, atualize também `index.html`, `manifest.json` e `sw.js`.
+- **Firestore Database**: crie no modo de produção
+- **Storage**: ative para upload de imagens
 
-## PWA e cache
+### 3. Configure as credenciais
 
-O cache do service worker está versionado como:
+Copie `firebase-config.example.js` para `firebase-config.js` e preencha:
 
 ```js
-const CACHE_NAME = 'erika-site-v1';
+window.FIREBASE_CONFIG = {
+  apiKey: "sua-api-key",
+  authDomain: "seu-projeto.firebaseapp.com",
+  projectId: "seu-projeto-id",
+  storageBucket: "seu-projeto.appspot.com",
+  messagingSenderId: "123456789",
+  appId: "1:123456789:web:abcdef"
+};
 ```
 
-Ao mudar arquivos importantes de layout, JavaScript, manifest ou assets cacheados, incremente a versão, por exemplo `erika-site-v2`. O service worker usa caminhos relativos para funcionar no GitHub Pages e ignora assets ausentes durante a instalação para evitar quebra do PWA.
+### 4. Scripts Firebase já carregados
 
-## Deploy no GitHub Pages
+`admin.html`, `index.html`, `terms.html` e `privacy.html` já carregam os SDKs compatíveis do Firebase e o arquivo `firebase-config.js`.
 
-Publique a pasta raiz do projeto. Os caminhos estão preparados para GitHub Pages com arquivos estáticos, sem backend.
+### 5. Coleções no Firestore
 
-## Tecnologias
+O painel usa as seguintes coleções:
 
-- HTML5 semântico
-- CSS3 com Custom Properties
-- JavaScript vanilla
-- Google Fonts: Cormorant Garamond + Jost
-- PWA com `manifest.json` e `sw.js`
+| Coleção | Documento | Conteúdo |
+|---------|-----------|----------|
+| `site_config` | `main` | WhatsApp, SEO, endereço, rodapé |
+| `site_content` | `main` | Textos, cards, FAQ, menu |
+| `site_theme` | `main` | Cores, espaçamentos, bordas |
+| `site_assets` | `main` | URLs e alts das imagens |
+| `site_meta` | `main` | Versão/última atualização do CMS |
 
-## Notas éticas e privacidade
+O site público tenta carregar nesta ordem:
 
-- Sem promessas de cura ou resultados
-- Sem depoimentos fictícios
-- Sem linguagem sensacionalista
-- Formulário envia pelo WhatsApp e não salva dados pessoais no navegador
-- Aviso de emergência mantido no rodapé
-- `privacy.html` e `terms.html` descrevem o funcionamento sem backend
+1. Firestore
+2. LocalStorage
+3. HTML original como fallback seguro
+
+Em celular Android/iOS, quando o admin salva uma alteração no Firestore, o site público recebe um aviso discreto de “Nova atualização disponível”. Ao tocar em “Atualizar”, a página recarrega e busca o conteúdo mais recente.
+
+### 6. Regras de segurança sugeridas (Firestore)
+
+```
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read: if true;    // site público lê livremente
+      allow write: if false;  // escrita controlada
+    }
+  }
+}
+```
+
+> Para escrita via admin autenticado, implemente Firebase Auth e ajuste as regras.
+
+### Regras de segurança sugeridas (Storage)
+
+```
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /images/{fileName} {
+      allow read: if true;
+      allow write: if false;
+    }
+  }
+}
+```
+
+Para produção com upload pelo painel, crie Firebase Auth e libere escrita apenas para o UID administrador.
+
+---
+
+## Como fazer deploy
+
+### GitHub Pages
+
+1. Faça push para o repositório GitHub
+2. Vá em Settings → Pages → selecione a branch `main`
+3. O site ficará disponível em `https://seuusuario.github.io/nomerepo/`
+
+### Netlify / Vercel
+
+Conecte o repositório e faça deploy direto. Não requer configuração adicional para o site estático.
+
+---
+
+## Funcionamento sem Firebase
+
+Se o Firebase não estiver configurado:
+- O site público usa o conteúdo do `index.html` original como fallback
+- As edições do admin são salvas no **LocalStorage** do navegador
+- As edições só aparecem no mesmo navegador/dispositivo
+- WhatsApp, formulário e PWA continuam funcionando normalmente
+
+---
+
+## Como atualizar o cache PWA
+
+Sempre que fizer mudanças grandes no site, incremente a versão no `sw.js`:
+
+```js
+const CACHE_NAME = 'erika-site-v3'; // ← incrementar
+```
+
+---
+
+## Aviso Legal
+
+A Erika Espíndola é apresentada no site como terapeuta com abordagem junguiana.
+O site usa linguagem adequada para essa atuação:
+
+✅ Terapeuta  
+✅ Atendimento terapêutico  
+✅ Escuta terapêutica  
+✅ Abordagem junguiana  
+✅ Autoconhecimento  
+✅ Desenvolvimento pessoal  
+
+❌ Títulos profissionais regulamentados sem habilitação formal  
+❌ Termos clínicos regulamentados usados como oferta profissional  
+❌ Afirmações que sugiram exercício profissional regulamentado por conselho de classe  
+❌ Promessas de cura ou resultado garantido  

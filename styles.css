@@ -1283,6 +1283,104 @@ button {
   flex-shrink: 0;
 }
 
+.footer__credits {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.footer__dev {
+  margin-top: 4px;
+  font-size: .62rem;
+  color: rgba(247,243,238,.22);
+}
+
+/* ---- CMS DYNAMIC BLOCKS ---------------------------------- */
+.cms-blocks {
+  background: var(--cream);
+}
+
+.cms-blocks__inner {
+  display: grid;
+  gap: 24px;
+}
+
+.cms-block {
+  max-width: 860px;
+  margin-inline: auto;
+  color: var(--text-mid);
+}
+
+.cms-block h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 4vw, 3rem);
+  font-weight: 400;
+  color: var(--text-dark);
+  margin-bottom: 12px;
+}
+
+.cms-block p {
+  font-size: 1rem;
+  line-height: 1.85;
+  margin-bottom: 18px;
+}
+
+.cms-block img {
+  width: 100%;
+  border-radius: var(--radius-md);
+}
+
+.cms-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+}
+
+.cms-video {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  aspect-ratio: 16 / 9;
+}
+
+.cms-video iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.cms-update-banner {
+  position: fixed;
+  left: 14px;
+  right: 14px;
+  bottom: 18px;
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 12px 11px 16px;
+  border-radius: 999px;
+  background: rgba(45, 37, 32, .94);
+  color: var(--cream);
+  box-shadow: 0 12px 36px rgba(0,0,0,.2);
+  font-size: .82rem;
+  backdrop-filter: blur(10px);
+}
+
+.cms-update-banner button {
+  flex-shrink: 0;
+  padding: 8px 13px;
+  border-radius: 999px;
+  background: var(--cream);
+  color: var(--text-dark);
+  font-size: .78rem;
+  font-weight: 500;
+}
+
+@media (min-width: 901px) and (pointer: fine) {
+  .cms-update-banner { display: none; }
+}
+
 /* ---- WHATSAPP FLOAT -------------------------------------- */
 .wa-float {
   position: fixed;
@@ -1369,6 +1467,7 @@ button {
 
   .footer__top { grid-template-columns: 1fr; gap: 32px; }
   .footer__bottom { flex-direction: column; }
+  .footer__credits { text-align: left; }
 
   .horarios__inner { gap: 40px; }
   .experiencia__inner { gap: 40px; }

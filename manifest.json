@@ -1,7 +1,7 @@
 {
   "name": "Erika Espíndola — Terapia Junguiana",
   "short_name": "Erika Espíndola",
-  "description": "Terapeuta pós-graduada em Psicologia Analítica Junguiana. Atendimento presencial em Goiânia e online para todo o Brasil.",
+  "description": "Terapeuta com abordagem junguiana. Atendimento presencial em Goiânia e online para todo o Brasil.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

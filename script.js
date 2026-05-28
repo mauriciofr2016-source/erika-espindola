@@ -17,7 +17,8 @@ const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
 const WHATSAPP_NUMBER = "5562999999999";
 
 function buildWhatsAppUrl(message = '') {
-  const url = new URL(`https://wa.me/${WHATSAPP_NUMBER}`);
+  const number = window.__CMS_WHATSAPP_NUMBER || WHATSAPP_NUMBER;
+  const url = new URL(`https://wa.me/${number}`);
   if (message.trim()) {
     url.searchParams.set('text', message.trim());
   }

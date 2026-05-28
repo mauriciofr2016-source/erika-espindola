@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — Erika Espíndola</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" type="image/png" href="assets/icons/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body class="admin-body">
+
+  <!-- ===== TELA DE LOGIN ===== -->
+  <div id="loginScreen" class="login-screen">
+    <div class="login-card">
+      <div class="login-logo">
+        <span class="login-logo__name">Erika Espíndola</span>
+        <span class="login-logo__sub">Painel Administrativo</span>
+      </div>
+      <form id="loginForm" novalidate>
+        <div class="form-group">
+          <label for="loginUser">Usuário</label>
+          <input type="text" id="loginUser" autocomplete="username" placeholder="usuário" />
+        </div>
+        <div class="form-group">
+          <label for="loginPass">Senha</label>
+          <input type="password" id="loginPass" autocomplete="current-password" placeholder="••••••" />
+        </div>
+        <p id="loginError" class="login-error" role="alert"></p>
+        <button type="submit" class="btn-admin btn-admin--primary" id="loginBtn">
+          <span class="btn-text">Entrar</span>
+        </button>
+      </form>
+      <p class="login-note">⚠️ Proteção básica de interface. Para produção real, configure Firebase Authentication.</p>
+    </div>
+  </div>
+
+  <!-- ===== PAINEL ADMIN ===== -->
+  <div id="adminPanel" class="admin-panel" style="display:none">
+
+    <!-- Sidebar -->
+    <aside class="admin-sidebar" id="adminSidebar">
+      <div class="sidebar-logo">
+        <span class="sidebar-logo__name">Erika Espíndola</span>
+        <span class="sidebar-logo__sub">Admin</span>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button class="sidebar-nav__item active" data-tab="geral">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5"/></svg>
+          Configurações Gerais
+        </button>
+        <button class="sidebar-nav__item" data-tab="conteudo">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12"/></svg>
+          Conteúdo do Site
+        </button>
+        <button class="sidebar-nav__item" data-tab="tema">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.098 19.902a3.75 3.75 0 005.304 0l6.401-6.402M6.75 21A3.75 3.75 0 013 17.25V4.125C3 3.504 3.504 3 4.125 3h5.25c.621 0 1.125.504 1.125 1.125v4.072M6.75 21a3.75 3.75 0 003.75-3.75V8.197M6.75 21h13.125c.621 0 1.125-.504 1.125-1.125v-5.25c0-.621-.504-1.125-1.125-1.125h-4.072M10.5 8.197l2.88-2.88c.438-.439 1.15-.439 1.59 0l3.712 3.713c.44.44.44 1.152 0 1.59l-2.879 2.88"/></svg>
+          Tema Visual
+        </button>
+        <button class="sidebar-nav__item" data-tab="imagens">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/></svg>
+          Imagens
+        </button>
+        <button class="sidebar-nav__item" data-tab="faq">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"/></svg>
+          FAQ
+        </button>
+        <button class="sidebar-nav__item" data-tab="whatsapp">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          WhatsApp
+        </button>
+        <button class="sidebar-nav__item" data-tab="backup">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"/></svg>
+          Backup
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <a href="index.html" target="_blank" class="btn-admin btn-admin--ghost sidebar-view-btn">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
+          Ver site
+        </a>
+        <button id="logoutBtn" class="btn-admin btn-admin--ghost sidebar-logout-btn">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"/></svg>
+          Sair
+        </button>
+      </div>
+    </aside>
+
+    <!-- Conteúdo principal -->
+    <main class="admin-main">
+      <div class="admin-topbar">
+        <button class="sidebar-toggle" id="sidebarToggle" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+        <h1 class="admin-topbar__title" id="tabTitle">Configurações Gerais</h1>
+        <div class="admin-topbar__status" id="globalStatus"></div>
+      </div>
+
+      <!-- ===== TAB: GERAL ===== -->
+      <section class="tab-content active" id="tab-geral">
+        <div class="admin-section">
+          <h2 class="admin-section__title">SEO & Identidade</h2>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Título do Site (aba do navegador)</label>
+              <input type="text" id="cfg-siteTitle" />
+            </div>
+            <div class="form-group">
+              <label>Descrição SEO</label>
+              <textarea id="cfg-siteDesc" rows="3"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="admin-section">
+          <h2 class="admin-section__title">Rodapé</h2>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Credenciais / localização</label>
+              <input type="text" id="cfg-footerCrp" />
+            </div>
+            <div class="form-group">
+              <label>Tagline do rodapé</label>
+              <input type="text" id="cfg-footerTag" />
+            </div>
+            <div class="form-group">
+              <label>Alcance (ex: Atendimento online para todo o Brasil)</label>
+              <input type="text" id="cfg-footerReach" />
+            </div>
+            <div class="form-group">
+              <label>Texto de Copyright</label>
+              <input type="text" id="cfg-copyright" />
+            </div>
+          </div>
+        </div>
+
+        <div class="admin-section">
+          <h2 class="admin-section__title">Endereço / Localização</h2>
+          <div class="form-group">
+            <label>Descrição do endereço</label>
+            <textarea id="cfg-endereco" rows="2"></textarea>
+          </div>
+        </div>
+
+        <div class="admin-actions">
+          <button class="btn-admin btn-admin--primary" id="saveGeral">
+            <span class="btn-text">Salvar configurações</span>
+          </button>
+          <span class="save-status" id="saveGeralStatus"></span>
+        </div>
+      </section>
+
+      <!-- ===== TAB: CONTEÚDO ===== -->
+      <section class="tab-content" id="tab-conteudo" style="display:none">
+
+        <!-- Sub-navegação de seções -->
+        <div class="section-tabs">
+          <button class="section-tab active" data-section="hero">Início</button>
+          <button class="section-tab" data-section="sobre">Sobre</button>
+          <button class="section-tab" data-section="atendimentos">Atendimentos</button>
+          <button class="section-tab" data-section="junguiana">Abordagem</button>
+          <button class="section-tab" data-section="espaco">Espaço</button>
+          <button class="section-tab" data-section="processo">Como funciona</button>
+          <button class="section-tab" data-section="horarios">Horários</button>
+          <button class="section-tab" data-section="experiencia">Experiência</button>
+          <button class="section-tab" data-section="contato">Contato</button>
+          <button class="section-tab" data-section="menu">Menu</button>
+        </div>
+
+        <!-- HERO -->
+        <div class="section-panel active" id="section-hero">
+          <div class="admin-section">
+            <h2 class="admin-section__title">Seção: Início</h2>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Tag / Rótulo</label>
+                <input type="text" id="hero-tag" />
+              </div>
+              <div class="form-group">
+                <label>Título principal (use &lt;br /&gt; para quebra de linha e &lt;em&gt;texto&lt;/em&gt; para itálico)</label>
+                <textarea id="hero-title" rows="3"></textarea>
+              </div>
+              <div class="form-group">
+                <label>Subtítulo</label>
+                <textarea id="hero-sub" rows="2"></textarea>
+              </div>
+              <div class="form-group">
+                <label>Texto botão principal</label>
+                <input type="text" id="hero-btnPrimary" />
+              </div>
+              <div class="form-group">
+                <label>Texto botão secundário</label>
+                <input type="text" id="hero-btnGhost" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SOBRE -->
+        <div class="section-panel" id="section-sobre" style="display:none">
+          <div class="admin-section">
+            <h2 class="admin-section__title">Seção: Sobre meu trabalho</h2>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Rótulo da seção</label>
+                <input type="text" id="sobre-label" />
+              </div>
+              <div class="form-group">
+                <label>Título da seção</label>
+                <textarea id="sobre-title" rows="2"></textarea>
+              </div>
+              <div class="form-group">
+                <label>Parágrafo 1</label>
+                <textarea id="sobre-p1" rows="3"></textarea>
+              </div>
+              <div class="form-group">
+                <label>Parágrafo 2</label>
+                <textarea id="sobre-p2" rows="3"></textarea>
+              </div>
+              <div class="form-group">
+                <label>Parágrafo 3</label>
+                <textarea id="sobre-p3" rows="3"></textarea>
+              </div>
+            </div>
+            <h3 class="admin-section__subtitle">Cards de abordagens</h3>
+            <div id="sobre-cards-list" class="cards-editor"></div>
+            <button class="btn-admin btn-admin--ghost add-card-btn" data-section="sobre">+ Adicionar card</button>
+          </div>
+        </div>
+
+        <!-- ATENDIMENTOS -->
+        <div class="section-panel" id="section-atendimentos" style="display:none">
+          <div class="admin-section">
+            <h2 class="admin-section__title">Seção: Áreas de Atendimento</h2>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Rótulo da seção</label>
+                <input type="text" id="atend-label" />
+              </div>
+              <div class="form-group">
+                <label>Título da seção</label>
+                <textarea id="atend-title" rows="2"></textarea>
+              </div>
+            </div>
+            <h3 class="admin-section__subtitle">Cards de atendimento</h3>
+            <div id="atend-cards-list" class="cards-editor"></div>
+            <button class="btn-admin btn-admin--ghost add-card-btn" data-section="atend">+ Adicionar card</button>
+          </div>
+        </div>
+
+        <!-- JUNGUIANA -->
+        <div class="section-panel" id="section-junguiana" style="display:none">
+          <div class="admin-section">
+            <h2 class="admin-section__title">Seção: Abordagem Junguiana</h2>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Rótulo da seção</label>
+                <input type="text" id="jung-label" />
+              </div>
+              <div class="form-group">
+                <label>Título</label>
+                <textarea id="jung-title" rows="2"></textarea>
+              </div>
+              <div class="form-group">
+                <label>Parágrafo 1</label>
+                <textarea id="jung-p1" rows="3"></textarea>
+              </div>
+              <div class="form-group">
+                <label>Parágrafo 2</label>
+                <textarea id="jung-p2" rows="3"></textarea>
+              </div>
+              <div class="form-group">
+                <label>Parágrafo 3</label>
+                <textarea id="jung-p3" rows="3"></textarea>
+              </div>
+              <div class="form-group">
+                <label>Pilares (separados por vírgula)</label>
+                <input type="text" id="jung-pillars" placeholder="Símbolos, Sonhos, Inconsciente, Autoconhecimento" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ESPAÇO -->
+        <div class="section-panel" id="section-espaco" style="display:none">
+          <div class="admin-section">
+            <h2 class="admin-section__title">Seção: Conheça meu Espaço</h2>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Rótulo da seção</label>
+                <input type="text" id="espaco-label" />
+              </div>
+              <div class="form-group">
+                <label>Título</label>
+                <textarea id="espaco-title" rows="2"></textarea>
+              </div>
+              <div class="form-group">
+                <label>Subtítulo / descrição</label>
+                <textarea id="espaco-sub" rows="3"></textarea>
+              </div>
+            </div>
+            <h3 class="admin-section__subtitle">Valores do espaço</h3>
+            <div id="espaco-values-list" class="cards-editor"></div>
+            <button class="btn-admin btn-admin--ghost add-card-btn" data-section="espaco-values">+ Adicionar valor</button>
+          </div>
+        </div>
+
+        <!-- PROCESSO -->
+        <div class="section-panel" id="section-processo" style="display:none">
+          <div class="admin-section">
+            <h2 class="admin-section__title">Seção: Como Funciona</h2>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Rótulo da seção</label>
+                <input type="text" id="proc-label" />
+              </div>
+              <div class="form-group">
+                <label>Título</label>
+                <textarea id="proc-title" rows="2"></textarea>
+              </div>
+            </div>
+            <h3 class="admin-section__subtitle">Etapas do processo</h3>
+            <div id="proc-steps-list" class="cards-editor"></div>
+            <button class="btn-admin btn-admin--ghost add-card-btn" data-section="proc-steps">+ Adicionar etapa</button>
+          </div>
+        </div>
+
+        <!-- HORÁRIOS -->
+        <div class="section-panel" id="section-horarios" style="display:none">
+          <div class="admin-section">
+            <h2 class="admin-section__title">Seção: Horários e Valores</h2>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Rótulo da seção</label>
+                <input type="text" id="hor-label" />
+              </div>
+              <div class="form-group">
+                <label>Título</label>
+                <textarea id="hor-title" rows="2"></textarea>
+              </div>
+            </div>
+            <h3 class="admin-section__subtitle">Grade de horários</h3>
+            <div id="hor-schedule-list" class="cards-editor"></div>
+            <button class="btn-admin btn-admin--ghost add-card-btn" data-section="hor-schedule">+ Adicionar linha</button>
+            <h3 class="admin-section__subtitle" style="margin-top:24px">Cards de valores</h3>
+            <div id="hor-cards-list" class="cards-editor"></div>
+            <button class="btn-admin btn-admin--ghost add-card-btn" data-section="hor-cards">+ Adicionar card</button>
+            <div class="form-group" style="margin-top:20px">
+              <label>Formas de pagamento (separadas por vírgula)</label>
+              <input type="text" id="hor-pagamento" placeholder="PIX, Transferência, Cartão" />
+            </div>
+            <div class="form-group">
+              <label>Texto do botão WhatsApp</label>
+              <input type="text" id="hor-btnText" />
+            </div>
+          </div>
+        </div>
+
+        <!-- EXPERIÊNCIA -->
+        <div class="section-panel" id="section-experiencia" style="display:none">
+          <div class="admin-section">
+            <h2 class="admin-section__title">Seção: Minha Experiência</h2>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Rótulo da seção</label>
+                <input type="text" id="exp-label" />
+              </div>
+              <div class="form-group">
+                <label>Título</label>
+                <textarea id="exp-title" rows="2"></textarea>
+              </div>
+              <div class="form-group">
+                <label>Parágrafo 1</label>
+                <textarea id="exp-p1" rows="3"></textarea>
+              </div>
+              <div class="form-group">
+                <label>Parágrafo 2</label>
+                <textarea id="exp-p2" rows="3"></textarea>
+              </div>
+              <div class="form-group">
+                <label>Parágrafo 3</label>
+                <textarea id="exp-p3" rows="3"></textarea>
+              </div>
+              <div class="form-group">
+                <label>Texto do botão</label>
+                <input type="text" id="exp-btnText" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CONTATO -->
+        <div class="section-panel" id="section-contato" style="display:none">
+          <div class="admin-section">
+            <h2 class="admin-section__title">Seção: Contato</h2>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Rótulo da seção</label>
+                <input type="text" id="cont-label" />
+              </div>
+              <div class="form-group">
+                <label>Título</label>
+                <textarea id="cont-title" rows="2"></textarea>
+              </div>
+              <div class="form-group">
+                <label>Subtítulo</label>
+                <textarea id="cont-sub" rows="2"></textarea>
+              </div>
+              <div class="form-group">
+                <label>Título do formulário</label>
+                <input type="text" id="cont-formTitle" />
+              </div>
+              <div class="form-group">
+                <label>Subtítulo do formulário</label>
+                <input type="text" id="cont-formSub" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MENU -->
+        <div class="section-panel" id="section-menu" style="display:none">
+          <div class="admin-section">
+            <h2 class="admin-section__title">Menu de Navegação</h2>
+            <div class="form-group">
+              <label>Texto do botão CTA (Agendar conversa)</label>
+              <input type="text" id="menu-ctaText" />
+            </div>
+            <h3 class="admin-section__subtitle">Links do menu</h3>
+            <div id="menu-links-list" class="cards-editor"></div>
+          </div>
+        </div>
+
+        <div class="admin-actions">
+          <button class="btn-admin btn-admin--primary" id="saveConteudo">
+            <span class="btn-text">Salvar conteúdo</span>
+          </button>
+          <span class="save-status" id="saveConteudoStatus"></span>
+        </div>
+      </section>
+
+      <!-- ===== TAB: TEMA ===== -->
+      <section class="tab-content" id="tab-tema" style="display:none">
+        <div class="admin-section">
+          <h2 class="admin-section__title">Cores Principais</h2>
+          <div class="color-grid">
+            <div class="color-item">
+              <label>Fundo principal (cream)</label>
+              <div class="color-input-wrap">
+                <input type="color" id="theme-cream" />
+                <input type="text" class="color-hex" data-for="theme-cream" />
+              </div>
+            </div>
+            <div class="color-item">
+              <label>Fundo secundário (cream-dark)</label>
+              <div class="color-input-wrap">
+                <input type="color" id="theme-creamDark" />
+                <input type="text" class="color-hex" data-for="theme-creamDark" />
+              </div>
+            </div>
+            <div class="color-item">
+              <label>Cor primária / botões (mocha)</label>
+              <div class="color-input-wrap">
+                <input type="color" id="theme-mocha" />
+                <input type="text" class="color-hex" data-for="theme-mocha" />
+              </div>
+            </div>
+            <div class="color-item">
+              <label>Cor primária escura (mocha-dark)</label>
+              <div class="color-input-wrap">
+                <input type="color" id="theme-mochaDark" />
+                <input type="text" class="color-hex" data-for="theme-mochaDark" />
+              </div>
+            </div>
+            <div class="color-item">
+              <label>Cor primária clara (mocha-light)</label>
+              <div class="color-input-wrap">
+                <input type="color" id="theme-mochaLight" />
+                <input type="text" class="color-hex" data-for="theme-mochaLight" />
+              </div>
+            </div>
+            <div class="color-item">
+              <label>Areia (sand)</label>
+              <div class="color-input-wrap">
+                <input type="color" id="theme-sand" />
+                <input type="text" class="color-hex" data-for="theme-sand" />
+              </div>
+            </div>
+            <div class="color-item">
+              <label>Texto escuro</label>
+              <div class="color-input-wrap">
+                <input type="color" id="theme-textDark" />
+                <input type="text" class="color-hex" data-for="theme-textDark" />
+              </div>
+            </div>
+            <div class="color-item">
+              <label>Texto médio</label>
+              <div class="color-input-wrap">
+                <input type="color" id="theme-textMid" />
+                <input type="text" class="color-hex" data-for="theme-textMid" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="admin-section">
+          <h2 class="admin-section__title">Espaçamento e Bordas</h2>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Padding vertical das seções (ex: 120px)</label>
+              <input type="text" id="theme-sectionV" placeholder="120px" />
+            </div>
+            <div class="form-group">
+              <label>Border-radius pequeno (ex: 12px)</label>
+              <input type="text" id="theme-radiusSm" placeholder="12px" />
+            </div>
+            <div class="form-group">
+              <label>Border-radius médio (ex: 24px)</label>
+              <input type="text" id="theme-radiusMd" placeholder="24px" />
+            </div>
+            <div class="form-group">
+              <label>Border-radius grande (ex: 60px)</label>
+              <input type="text" id="theme-radiusXl" placeholder="60px" />
+            </div>
+          </div>
+        </div>
+
+        <div class="admin-section">
+          <div class="theme-preview-bar" id="themePreviewBar">
+            <span>Preview do tema:</span>
+            <div class="preview-btn-sample">Botão primário</div>
+            <div class="preview-card-sample">Card de exemplo</div>
+          </div>
+        </div>
+
+        <div class="admin-actions">
+          <button class="btn-admin btn-admin--primary" id="saveTema">
+            <span class="btn-text">Salvar tema</span>
+          </button>
+          <button class="btn-admin btn-admin--ghost" id="resetTema">Restaurar tema padrão</button>
+          <span class="save-status" id="saveTemaStatus"></span>
+        </div>
+      </section>
+
+      <!-- ===== TAB: IMAGENS ===== -->
+      <section class="tab-content" id="tab-imagens" style="display:none">
+        <div class="admin-section">
+          <h2 class="admin-section__title">Imagens do Site</h2>
+          <p class="admin-section__desc">Envie novas imagens para substituir as existentes. As imagens são salvas no Firebase Storage quando configurado, ou ficam disponíveis localmente.</p>
+
+          <div class="images-grid">
+            <div class="image-item" data-key="erika-hero">
+              <div class="image-preview">
+                <img id="preview-erika-hero" src="assets/img/erika-hero.jpg" alt="Hero" />
+              </div>
+              <div class="image-controls">
+                <label class="image-label">Foto principal (Hero)</label>
+                <input type="text" class="img-alt-input" id="alt-erika-hero" placeholder="Texto alternativo (alt)" />
+                <label class="upload-btn">
+                  <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg>
+                  Trocar imagem
+                  <input type="file" accept="image/*" class="img-upload-input" data-key="erika-hero" style="display:none" />
+                </label>
+              </div>
+            </div>
+
+            <div class="image-item" data-key="erika-experiencia">
+              <div class="image-preview">
+                <img id="preview-erika-experiencia" src="assets/img/erika-experiencia.jpg" alt="Experiência" />
+              </div>
+              <div class="image-controls">
+                <label class="image-label">Foto Experiência</label>
+                <input type="text" class="img-alt-input" id="alt-erika-experiencia" placeholder="Texto alternativo (alt)" />
+                <label class="upload-btn">
+                  <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg>
+                  Trocar imagem
+                  <input type="file" accept="image/*" class="img-upload-input" data-key="erika-experiencia" style="display:none" />
+                </label>
+              </div>
+            </div>
+
+            <div class="image-item" data-key="espaco-consultorio">
+              <div class="image-preview">
+                <img id="preview-espaco-consultorio" src="assets/img/espaco-consultorio.jpg" alt="Consultório" />
+              </div>
+              <div class="image-controls">
+                <label class="image-label">Espaço — Consultório principal</label>
+                <input type="text" class="img-alt-input" id="alt-espaco-consultorio" placeholder="Texto alternativo (alt)" />
+                <label class="upload-btn">
+                  <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg>
+                  Trocar imagem
+                  <input type="file" accept="image/*" class="img-upload-input" data-key="espaco-consultorio" style="display:none" />
+                </label>
+              </div>
+            </div>
+
+            <div class="image-item" data-key="espaco-jardim">
+              <div class="image-preview">
+                <img id="preview-espaco-jardim" src="assets/img/espaco-jardim.jpg" alt="Jardim" />
+              </div>
+              <div class="image-controls">
+                <label class="image-label">Espaço — Jardim</label>
+                <input type="text" class="img-alt-input" id="alt-espaco-jardim" placeholder="Texto alternativo (alt)" />
+                <label class="upload-btn">
+                  <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg>
+                  Trocar imagem
+                  <input type="file" accept="image/*" class="img-upload-input" data-key="espaco-jardim" style="display:none" />
+                </label>
+              </div>
+            </div>
+
+            <div class="image-item" data-key="espaco-sala">
+              <div class="image-preview">
+                <img id="preview-espaco-sala" src="assets/img/espaco-sala.jpg" alt="Sala" />
+              </div>
+              <div class="image-controls">
+                <label class="image-label">Espaço — Sala</label>
+                <input type="text" class="img-alt-input" id="alt-espaco-sala" placeholder="Texto alternativo (alt)" />
+                <label class="upload-btn">
+                  <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg>
+                  Trocar imagem
+                  <input type="file" accept="image/*" class="img-upload-input" data-key="espaco-sala" style="display:none" />
+                </label>
+              </div>
+            </div>
+
+            <div class="image-item" data-key="decorativo-agua">
+              <div class="image-preview">
+                <img id="preview-decorativo-agua" src="assets/img/decorativo-agua.png" alt="Decorativo água" />
+              </div>
+              <div class="image-controls">
+                <label class="image-label">Imagem decorativa — Água</label>
+                <input type="text" class="img-alt-input" id="alt-decorativo-agua" placeholder="Texto alternativo (alt)" />
+                <label class="upload-btn">
+                  <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg>
+                  Trocar imagem
+                  <input type="file" accept="image/*" class="img-upload-input" data-key="decorativo-agua" style="display:none" />
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <p class="admin-note">ℹ️ As imagens substituídas são salvas como Data URL no conteúdo local. Para persistência permanente entre dispositivos, configure o Firebase Storage.</p>
+        </div>
+
+        <div class="admin-actions">
+          <button class="btn-admin btn-admin--primary" id="saveImagens">
+            <span class="btn-text">Salvar imagens</span>
+          </button>
+          <span class="save-status" id="saveImagensStatus"></span>
+        </div>
+      </section>
+
+      <!-- ===== TAB: FAQ ===== -->
+      <section class="tab-content" id="tab-faq" style="display:none">
+        <div class="admin-section">
+          <h2 class="admin-section__title">Perguntas Frequentes</h2>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Rótulo da seção</label>
+              <input type="text" id="faq-label" />
+            </div>
+            <div class="form-group">
+              <label>Título da seção</label>
+              <textarea id="faq-title" rows="2"></textarea>
+            </div>
+          </div>
+          <h3 class="admin-section__subtitle">Perguntas e respostas</h3>
+          <div id="faq-items-list" class="cards-editor"></div>
+          <button class="btn-admin btn-admin--ghost" id="addFaqBtn">+ Adicionar pergunta</button>
+        </div>
+        <div class="admin-actions">
+          <button class="btn-admin btn-admin--primary" id="saveFaq">
+            <span class="btn-text">Salvar FAQ</span>
+          </button>
+          <span class="save-status" id="saveFaqStatus"></span>
+        </div>
+      </section>
+
+      <!-- ===== TAB: WHATSAPP ===== -->
+      <section class="tab-content" id="tab-whatsapp" style="display:none">
+        <div class="admin-section">
+          <h2 class="admin-section__title">Número do WhatsApp</h2>
+          <div class="form-group">
+            <label>Número (apenas dígitos, com código do país — ex: 5562999999999)</label>
+            <input type="tel" id="wa-number" placeholder="5562999999999" />
+          </div>
+          <button class="btn-admin btn-admin--ghost" id="testWaBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            Testar link do WhatsApp
+          </button>
+        </div>
+
+        <div class="admin-section">
+          <h2 class="admin-section__title">Mensagens automáticas dos botões</h2>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Mensagem — Header / Botão agendar</label>
+              <textarea id="wa-msg-header" rows="2"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Mensagem — Hero</label>
+              <textarea id="wa-msg-hero" rows="2"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Mensagem — Horários e valores</label>
+              <textarea id="wa-msg-horarios" rows="2"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Mensagem — Rodapé / Contato</label>
+              <textarea id="wa-msg-footer" rows="2"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Mensagem — Botão flutuante</label>
+              <textarea id="wa-msg-float" rows="2"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="admin-actions">
+          <button class="btn-admin btn-admin--primary" id="saveWa">
+            <span class="btn-text">Salvar WhatsApp</span>
+          </button>
+          <span class="save-status" id="saveWaStatus"></span>
+        </div>
+      </section>
+
+      <!-- ===== TAB: BACKUP ===== -->
+      <section class="tab-content" id="tab-backup" style="display:none">
+        <div class="admin-section">
+          <h2 class="admin-section__title">Exportar Backup</h2>
+          <p class="admin-section__desc">Exporta todo o conteúdo editado como arquivo JSON. Guarde esse arquivo como backup de segurança.</p>
+          <button class="btn-admin btn-admin--primary" id="exportBackup">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+            Exportar backup JSON
+          </button>
+        </div>
+
+        <div class="admin-section">
+          <h2 class="admin-section__title">Importar Backup</h2>
+          <p class="admin-section__desc">Restaura um backup JSON exportado anteriormente. <strong>Atenção: substituirá todo o conteúdo atual.</strong></p>
+          <label class="upload-btn">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg>
+            Selecionar arquivo JSON
+            <input type="file" accept=".json" id="importBackupInput" style="display:none" />
+          </label>
+          <span class="save-status" id="backupStatus"></span>
+        </div>
+
+        <div class="admin-section">
+          <h2 class="admin-section__title">Restaurar Padrão</h2>
+          <p class="admin-section__desc">Restaura todo o conteúdo para os valores originais do site. <strong>Atenção: apagará todas as edições feitas.</strong></p>
+          <button class="btn-admin btn-admin--danger" id="resetAll">
+            Restaurar conteúdo original
+          </button>
+        </div>
+
+        <div class="admin-section">
+          <h2 class="admin-section__title">Firebase</h2>
+          <div id="firebaseStatus" class="firebase-status">
+            <span class="firebase-status__dot"></span>
+            <span class="firebase-status__text">Verificando Firebase...</span>
+          </div>
+          <p class="admin-note">Configure o Firebase em <code>firebase-config.js</code> seguindo o exemplo em <code>firebase-config.example.js</code>.</p>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Toast de notificação -->
+  <div class="admin-toast" id="adminToast" role="alert" aria-live="polite"></div>
+
+  <script src="cms-defaults.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-storage-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

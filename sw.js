@@ -1,15 +1,17 @@
 /* ============================================================
    ERIKA ESPINDOLA - sw.js
    Service Worker / PWA Cache
+   v3 — CMS Firebase real, legal-loader e cache menos agressivo
    ============================================================ */
 
-const CACHE_NAME = 'erika-site-v1';
+const CACHE_NAME = 'erika-site-v3';
 
 const STATIC_ASSETS = [
   './',
   './index.html',
   './styles.css',
   './script.js',
+  './cms-defaults.js',
   './manifest.json',
   './privacy.html',
   './terms.html',
@@ -43,6 +45,7 @@ async function cacheStaticAssets() {
 
 self.addEventListener('install', (event) => {
   event.waitUntil(cacheStaticAssets());
+  self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
@@ -62,7 +65,18 @@ self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
-  if (request.method !== 'GET' || url.origin !== self.location.origin) {
+  // Não cachear admin, Firebase, config local ou APIs externas
+  if (
+    request.method !== 'GET' ||
+    url.pathname.includes('admin') ||
+    url.pathname.endsWith('/firebase-config.js') ||
+    url.pathname.endsWith('/cms-loader.js') ||
+    url.pathname.endsWith('/legal-loader.js') ||
+    url.hostname.includes('firestore') ||
+    url.hostname.includes('firebase') ||
+    url.hostname.includes('googleapis') ||
+    url.origin !== self.location.origin
+  ) {
     return;
   }
 
@@ -76,7 +90,6 @@ self.addEventListener('fetch', (event) => {
 
 async function networkFirst(request, fallbackUrl) {
   const cache = await caches.open(CACHE_NAME);
-
   try {
     const response = await fetch(request);
     if (response.ok) {
