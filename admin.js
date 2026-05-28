@@ -594,6 +594,25 @@ function escHtml(str) {
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
+function sanitizeAdminHtml(value, allowTrustedEmbed = false) {
+  const template = document.createElement('template');
+  template.innerHTML = String(value || '');
+  const iframeSelector = allowTrustedEmbed
+    ? 'iframe:not([src*="youtube.com"]):not([src*="youtube-nocookie.com"]):not([src*="vimeo.com"])'
+    : 'iframe';
+  template.content.querySelectorAll(`script, ${iframeSelector}, object, embed, link, meta, style`).forEach(el => el.remove());
+  template.content.querySelectorAll('*').forEach(el => {
+    [...el.attributes].forEach(attr => {
+      const name = attr.name.toLowerCase();
+      const val = attr.value.trim().toLowerCase();
+      if (name.startsWith('on') || val.startsWith('javascript:') || val.startsWith('data:text/html')) {
+        el.removeAttribute(attr.name);
+      }
+    });
+  });
+  return template.innerHTML;
+}
+
 function makeSortable(container, onEnd) {
   if (!container || container.dataset.sortableReady === '1') return;
   container.dataset.sortableReady = '1';
@@ -1311,6 +1330,7 @@ function enhanceSeoAndLegalEditor() {
       <div class="form-group"><label>Favicon</label><input type="text" id="cfg-favicon" value="${escHtml(c.favicon || '')}" /></div>
     </div>
     <h2 class="admin-section__title" style="margin-top:26px">Textos legais</h2>
+    <p class="admin-section__desc">Use HTML simples de formatação. Scripts, eventos inline e iframes não confiáveis são removidos antes de salvar/exibir.</p>
     <div class="form-grid">
       <div class="form-group"><label>Data dos Termos</label><input type="text" id="cfg-termsUpdated" value="${escHtml(legal.termsUpdated || '')}" /></div>
       <div class="form-group"><label>Data da Privacidade</label><input type="text" id="cfg-privacyUpdated" value="${escHtml(legal.privacyUpdated || '')}" /></div>
@@ -1341,8 +1361,8 @@ function enhanceSeoAndLegalEditor() {
       legal: {
         termsUpdated: $('#cfg-termsUpdated')?.value || '',
         privacyUpdated: $('#cfg-privacyUpdated')?.value || '',
-        termsHtml: $('#cfg-termsHtml')?.value || '',
-        privacyHtml: $('#cfg-privacyHtml')?.value || ''
+        termsHtml: sanitizeAdminHtml($('#cfg-termsHtml')?.value || ''),
+        privacyHtml: sanitizeAdminHtml($('#cfg-privacyHtml')?.value || '')
       }
     };
     const ok = await saveSection('config', data);
@@ -1418,6 +1438,7 @@ function enhanceBlocksEditor() {
   box.innerHTML = `
     <h2 class="admin-section__title">Blocos dinâmicos</h2>
     <p class="admin-section__desc">Adicione blocos extras sem alterar a estrutura aprovada do site.</p>
+    <p class="admin-section__desc">Segurança: HTML de texto é sanitizado no site público. Use embeds apenas de fontes confiáveis como YouTube, YouTube NoCookie ou Vimeo.</p>
     <div class="form-grid">
       <div class="form-group">
         <label>Tipo de bloco</label>
@@ -1544,7 +1565,10 @@ function renderBlocksEditor(blocks) {
 function readBlockRow(row) {
   const cfg = {};
   row.querySelectorAll('[data-block-field]').forEach(input => {
-    cfg[input.dataset.blockField] = input.value;
+    const field = input.dataset.blockField;
+    cfg[field] = field === 'embed'
+      ? sanitizeAdminHtml(input.value, true)
+      : input.value;
   });
   cfg.style = {};
   row.querySelectorAll('[data-style-field]').forEach(input => {

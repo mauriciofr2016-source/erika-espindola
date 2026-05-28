@@ -27,6 +27,8 @@ Site institucional com painel administrativo para edição de conteúdo.
     └── icons/              # Ícones PWA
 ```
 
+Os caminhos usados no projeto seguem formato web com barra `/`, por exemplo `assets/img/erika-hero.jpg` e `assets/icons/icon-192.png`. Isso mantém compatibilidade com GitHub Pages/Linux. Não use caminhos com `\` no HTML, CSS, JS, manifest ou service worker.
+
 ---
 
 ## Acesso ao Painel Admin
@@ -84,6 +86,8 @@ window.FIREBASE_CONFIG = {
 
 `admin.html`, `index.html`, `terms.html` e `privacy.html` já carregam os SDKs compatíveis do Firebase e o arquivo `firebase-config.js`.
 
+Se `firebase-config.js` ficar vazio (`window.FIREBASE_CONFIG = window.FIREBASE_CONFIG || null;`), o projeto não quebra: o site usa o HTML original e o admin salva apenas no LocalStorage do navegador. Para salvar online e mostrar as edições para todos os usuários, é obrigatório preencher `firebase-config.js`, ativar Firestore/Storage e configurar regras.
+
 ### 5. Coleções no Firestore
 
 O painel usa as seguintes coleções:
@@ -106,6 +110,26 @@ Em celular Android/iOS, quando o admin salva uma alteração no Firestore, o sit
 
 ### 6. Regras de segurança sugeridas (Firestore)
 
+#### Regra temporária apenas para teste
+
+Use por poucos minutos em ambiente de teste para confirmar se o admin grava no Firestore. Não use em produção.
+
+```
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read: if true;
+      allow write: if true;
+    }
+  }
+}
+```
+
+#### Regra bloqueada segura
+
+Esta regra é segura para leitura pública, mas bloqueia qualquer escrita do admin. Com `allow write: if false`, o painel continuará funcionando só no fallback local.
+
 ```
 rules_version = '2';
 service cloud.firestore {
@@ -118,23 +142,72 @@ service cloud.firestore {
 }
 ```
 
-> Para escrita via admin autenticado, implemente Firebase Auth e ajuste as regras.
+#### Regra recomendada com Firebase Auth
 
-### Regras de segurança sugeridas (Storage)
+Crie Firebase Authentication e libere escrita apenas para o UID administrador.
 
 ```
 rules_version = '2';
-service firebase.storage {
-  match /b/{bucket}/o {
-    match /images/{fileName} {
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.uid == "COLOQUE_AQUI_O_UID_ADMIN";
+    }
+
+    match /{document=**} {
       allow read: if true;
-      allow write: if false;
+      allow write: if isAdmin();
     }
   }
 }
 ```
 
-Para produção com upload pelo painel, crie Firebase Auth e libere escrita apenas para o UID administrador.
+### Regras de segurança sugeridas (Storage)
+
+#### Storage temporário apenas para teste
+
+```
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /{allPaths=**} {
+      allow read: if true;
+      allow write: if true;
+    }
+  }
+}
+```
+
+#### Storage seguro com Auth
+
+```
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.uid == "COLOQUE_AQUI_O_UID_ADMIN";
+    }
+
+    match /images/{fileName} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+  }
+}
+```
+
+Para produção com upload pelo painel, use a regra com Firebase Auth. Regras temporárias abertas servem apenas para teste rápido.
+
+---
+
+## Segurança do CMS
+
+- O login hardcoded (`erika` / `223687`) é apenas proteção visual e não deve ser considerado segurança real.
+- O caminho recomendado é migrar o login para Firebase Auth e restringir escrita no Firestore/Storage por UID administrador.
+- Campos com HTML nos textos legais e nos blocos dinâmicos são sanitizados para remover scripts, eventos inline e URLs perigosas.
+- Mesmo com sanitização no frontend, só conceda acesso ao admin para pessoas confiáveis.
 
 ---
 

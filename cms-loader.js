@@ -92,7 +92,27 @@
   function setHTML(selector, value) {
     if (!value) return;
     const el = document.querySelector(selector);
-    if (el) el.innerHTML = value;
+    if (el) el.innerHTML = sanitizeHtml(value);
+  }
+
+  function sanitizeHtml(value) {
+    const template = document.createElement('template');
+    template.innerHTML = String(value);
+    template.content.querySelectorAll('script, iframe:not([src*="youtube.com"]):not([src*="youtube-nocookie.com"]):not([src*="vimeo.com"]), object, embed, link, meta, style').forEach(el => el.remove());
+    template.content.querySelectorAll('*').forEach(el => {
+      [...el.attributes].forEach(attr => {
+        const name = attr.name.toLowerCase();
+        const val = attr.value.trim().toLowerCase();
+        if (name.startsWith('on') || val.startsWith('javascript:') || val.startsWith('data:text/html')) {
+          el.removeAttribute(attr.name);
+        }
+      });
+    });
+    return template.innerHTML;
+  }
+
+  function escHtml(str) {
+    return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
 
   function setAttr(selector, attr, value) {
@@ -369,7 +389,7 @@
     if (h.pagamento && h.pagamento.length) {
       const pgEl = document.querySelector('.pagamento__methods');
       if (pgEl) {
-        pgEl.innerHTML = h.pagamento.map(m => `<span>${m}</span>`).join('');
+        pgEl.innerHTML = h.pagamento.map(m => `<span>${escHtml(m)}</span>`).join('');
       }
     }
 
@@ -447,15 +467,15 @@
       const mobileList = document.querySelector('.mobile-menu ul');
       const linksHtml = m.links
         .filter(link => link.visible !== false)
-        .map(link => `<li><a href="${link.href}" class="nav__link">${link.label}</a></li>`)
+        .map(link => `<li><a href="${escHtml(link.href)}" class="nav__link">${escHtml(link.label)}</a></li>`)
         .join('');
       const mobileLinksHtml = m.links
         .filter(link => link.visible !== false)
-        .map(link => `<li><a href="${link.href}" class="mobile-link">${link.label}</a></li>`)
+        .map(link => `<li><a href="${escHtml(link.href)}" class="mobile-link">${escHtml(link.label)}</a></li>`)
         .join('');
       if (navList) navList.innerHTML = linksHtml;
       if (mobileList) {
-        const ctaHtml = m.ctaText ? `<li><a href="#contato" class="btn btn--primary mobile-cta js-whatsapp" data-whatsapp-message="Olá, gostaria de agendar uma conversa." target="_blank" rel="noopener noreferrer">${m.ctaText}</a></li>` : '';
+        const ctaHtml = m.ctaText ? `<li><a href="#contato" class="btn btn--primary mobile-cta js-whatsapp" data-whatsapp-message="Olá, gostaria de agendar uma conversa." target="_blank" rel="noopener noreferrer">${escHtml(m.ctaText)}</a></li>` : '';
         mobileList.innerHTML = mobileLinksHtml + ctaHtml;
         if (typeof closeMenu === 'function') {
           mobileList.querySelectorAll('.mobile-link').forEach(link => {
@@ -537,10 +557,10 @@
       wrap.style.setProperty(cssKey, value);
     });
 
-    const title = cfg.title ? `<h2>${cfg.title}</h2>` : '';
-    const text = cfg.text ? `<p>${cfg.text}</p>` : '';
-    const button = cfg.buttonText ? `<a class="btn btn--primary js-whatsapp" href="${cfg.href || '#contato'}">${cfg.buttonText}</a>` : '';
-    const image = cfg.src ? `<img src="${cfg.src}" alt="${cfg.alt || ''}" loading="lazy" />` : '';
+    const title = cfg.title ? `<h2>${sanitizeHtml(cfg.title)}</h2>` : '';
+    const text = cfg.text ? `<p>${sanitizeHtml(cfg.text)}</p>` : '';
+    const button = cfg.buttonText ? `<a class="btn btn--primary js-whatsapp" href="${escHtml(cfg.href || '#contato')}">${escHtml(cfg.buttonText)}</a>` : '';
+    const image = cfg.src ? `<img src="${escHtml(cfg.src)}" alt="${escHtml(cfg.alt || '')}" loading="lazy" />` : '';
 
     switch (block.type) {
       case 'imagem':
@@ -552,14 +572,14 @@
         wrap.innerHTML = `${title}${text}${button}`;
         break;
       case 'faq':
-        wrap.innerHTML = `${title}<div>${(cfg.items || []).map(item => `<details><summary>${item.q || ''}</summary><p>${item.a || ''}</p></details>`).join('')}</div>`;
+        wrap.innerHTML = `${title}<div>${(cfg.items || []).map(item => `<details><summary>${escHtml(item.q || '')}</summary><p>${sanitizeHtml(item.a || '')}</p></details>`).join('')}</div>`;
         break;
       case 'galeria':
-        wrap.innerHTML = `<div class="cms-gallery">${(cfg.images || []).map(img => `<img src="${img.src}" alt="${img.alt || ''}" loading="lazy" />`).join('')}</div>`;
+        wrap.innerHTML = `<div class="cms-gallery">${(cfg.images || []).map(img => `<img src="${escHtml(img.src)}" alt="${escHtml(img.alt || '')}" loading="lazy" />`).join('')}</div>`;
         break;
       case 'video':
       case 'vídeo embed':
-        wrap.innerHTML = cfg.embed ? `<div class="cms-video">${cfg.embed}</div>` : `${title}${text}`;
+        wrap.innerHTML = cfg.embed ? `<div class="cms-video">${sanitizeHtml(cfg.embed)}</div>` : `${title}${text}`;
         break;
       case 'separador':
         wrap.innerHTML = '<hr />';

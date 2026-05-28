@@ -22,6 +22,7 @@ window.FIREBASE_CONFIG = {
 // - site_content/main     → conteúdo das seções (textos, cards, FAQ)
 // - site_theme/main       → cores e estilos visuais
 // - site_assets/main      → URLs das imagens salvas no Storage
+// - site_meta/main        → versão/última atualização para aviso mobile
 //
 // Firebase Storage:
 // - /images/              → imagens enviadas pelo painel admin
@@ -32,9 +33,10 @@ window.FIREBASE_CONFIG = {
 //   match /databases/{database}/documents {
 //     match /{document=**} {
 //       allow read: if true;          // site público pode ler
-//       allow write: if false;        // escrita apenas via admin autenticado
+//       allow write: if false;        // bloqueia gravação online do admin
 //     }
 //   }
 // }
 //
-// Para produção real, implemente Firebase Auth e ajuste as regras.
+// Para produção real, implemente Firebase Auth e ajuste as regras
+// para permitir escrita apenas ao UID administrador.

@@ -49,10 +49,25 @@
   if (!html || !container || !heading) return;
 
   const temp = document.createElement('div');
-  temp.innerHTML = html;
+  temp.innerHTML = sanitizeHtml(html);
   [...container.children].forEach((child) => {
     if (child !== backLink && child !== heading && child !== updated) child.remove();
   });
   [...temp.childNodes].forEach(node => container.appendChild(node));
-})();
 
+  function sanitizeHtml(value) {
+    const template = document.createElement('template');
+    template.innerHTML = String(value);
+    template.content.querySelectorAll('script, iframe, object, embed, link, meta, style').forEach(el => el.remove());
+    template.content.querySelectorAll('*').forEach(el => {
+      [...el.attributes].forEach(attr => {
+        const name = attr.name.toLowerCase();
+        const val = attr.value.trim().toLowerCase();
+        if (name.startsWith('on') || val.startsWith('javascript:') || val.startsWith('data:text/html')) {
+          el.removeAttribute(attr.name);
+        }
+      });
+    });
+    return template.innerHTML;
+  }
+})();
