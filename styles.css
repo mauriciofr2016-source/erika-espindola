@@ -1221,7 +1221,7 @@ button {
   color: var(--cream);
   margin-bottom: 4px;
 }
-.footer__crp { font-size: .8rem; color: var(--mocha-light); margin-bottom: 6px; }
+.footer__credential { font-size: .8rem; color: var(--mocha-light); margin-bottom: 6px; }
 .footer__tagline { font-size: .8rem; margin-bottom: 4px; }
 .footer__reach { font-size: .78rem; }
 

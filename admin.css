@@ -95,6 +95,29 @@ img { display: block; max-width: 100%; }
   line-height: 1.5;
 }
 
+/* Estado de loading do botão de login */
+#loginBtn:disabled {
+  opacity: .7;
+  cursor: not-allowed;
+}
+
+#loginBtn:disabled .btn-text::after {
+  content: '';
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-left: 8px;
+  border: 2px solid rgba(255,255,255,.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: loginSpin .7s linear infinite;
+  vertical-align: middle;
+}
+
+@keyframes loginSpin {
+  to { transform: rotate(360deg); }
+}
+
 /* ============================================================
    LAYOUT ADMIN
    ============================================================ */

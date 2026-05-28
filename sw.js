@@ -1,10 +1,10 @@
 /* ============================================================
    ERIKA ESPINDOLA - sw.js
    Service Worker / PWA Cache
-   v3 — CMS Firebase real, legal-loader e cache menos agressivo
+   v4 — footerCredential, login hardened, Firebase blindado
    ============================================================ */
 
-const CACHE_NAME = 'erika-site-v3';
+const CACHE_NAME = 'erika-site-v4';
 
 const STATIC_ASSETS = [
   './',

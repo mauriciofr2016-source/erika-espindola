@@ -121,38 +121,48 @@ function loadFromLocal() {
 }
 
 // ============================================================
-// FIREBASE — INICIALIZAÇÃO OPCIONAL
+// FIREBASE — INICIALIZAÇÃO OPCIONAL E SEGURA
+// Nunca lança erro não capturado. Fallback sempre é localStorage.
 // ============================================================
 function initFirebase() {
   const statusEl = $('#firebaseStatus');
 
-  // Tenta carregar firebase-config.js (pode não existir)
-  if (!window.FIREBASE_CONFIG) {
-    if (statusEl) {
-      statusEl.className = 'firebase-status warning';
-      statusEl.querySelector('.firebase-status__text').textContent =
-        'Firebase não configurado. Usando armazenamento local (LocalStorage). Configure firebase-config.js para persistência multi-dispositivo.';
-    }
+  function setStatus(state, msg) {
+    if (!statusEl) return;
+    statusEl.className = 'firebase-status ' + state;
+    const txt = statusEl.querySelector('.firebase-status__text');
+    if (txt) txt.textContent = msg;
+  }
+
+  // Sem config definida ou config vazia → fallback local
+  if (!window.FIREBASE_CONFIG || typeof window.FIREBASE_CONFIG !== 'object') {
+    setStatus('warning',
+      'Firebase não configurado. Usando armazenamento local. Configure firebase-config.js para persistência multi-dispositivo.');
+    return;
+  }
+
+  // Firebase SDK não carregado (pode acontecer offline)
+  if (typeof firebase === 'undefined') {
+    setStatus('warning',
+      'Firebase SDK não carregado (offline?). Usando armazenamento local.');
     return;
   }
 
   try {
-    if (typeof firebase !== 'undefined') {
-      if (!firebase.apps.length) firebase.initializeApp(window.FIREBASE_CONFIG);
-      db = firebase.firestore();
-      storage = firebase.storage();
-      firebaseAvailable = true;
-      if (statusEl) {
-        statusEl.className = 'firebase-status connected';
-        statusEl.querySelector('.firebase-status__text').textContent = 'Firebase conectado com sucesso.';
-      }
+    if (!firebase.apps || !firebase.apps.length) {
+      firebase.initializeApp(window.FIREBASE_CONFIG);
     }
+    db      = firebase.firestore();
+    storage = firebase.storage();
+    firebaseAvailable = true;
+    setStatus('connected', 'Firebase conectado com sucesso.');
   } catch (e) {
-    console.warn('Firebase init error:', e);
-    if (statusEl) {
-      statusEl.className = 'firebase-status error';
-      statusEl.querySelector('.firebase-status__text').textContent = 'Erro ao conectar ao Firebase. Usando armazenamento local.';
-    }
+    console.warn('[Admin] Firebase init error:', e.message || e);
+    db      = null;
+    storage = null;
+    firebaseAvailable = false;
+    setStatus('error',
+      'Erro ao conectar ao Firebase. Usando armazenamento local. Verifique firebase-config.js.');
   }
 }
 
@@ -211,23 +221,28 @@ async function loadAllData() {
     cmsData = deepMerge(cmsData, local);
   }
 
-  // Se Firebase disponível, tenta carregar de lá
+  // Se Firebase disponível, tenta carregar de lá (falha individual não bloqueia)
   if (firebaseAvailable && db) {
-    try {
-      const [cfgDoc, themeDoc, contentDoc, assetsDoc] = await Promise.all([
-        db.collection('site_config').doc('main').get(),
-        db.collection('site_theme').doc('main').get(),
-        db.collection('site_content').doc('main').get(),
-        db.collection('site_assets').doc('main').get()
-      ]);
+    const safeGet = async (collection, doc) => {
+      try {
+        return await db.collection(collection).doc(doc).get();
+      } catch (e) {
+        console.warn(`[Admin] Falha ao carregar ${collection}/${doc}:`, e.message || e);
+        return null;
+      }
+    };
 
-      if (cfgDoc.exists)     cmsData.config  = deepMerge(cmsData.config,  cfgDoc.data());
-      if (themeDoc.exists)   cmsData.theme   = deepMerge(cmsData.theme,   themeDoc.data());
-      if (contentDoc.exists) cmsData.content = deepMerge(cmsData.content, contentDoc.data());
-      if (assetsDoc.exists)  cmsData.assets  = deepMerge(cmsData.assets || {}, assetsDoc.data());
-    } catch (e) {
-      console.warn('Erro ao carregar Firebase, usando dados locais:', e);
-    }
+    const [cfgDoc, themeDoc, contentDoc, assetsDoc] = await Promise.all([
+      safeGet('site_config', 'main'),
+      safeGet('site_theme', 'main'),
+      safeGet('site_content', 'main'),
+      safeGet('site_assets', 'main')
+    ]);
+
+    if (cfgDoc?.exists)     cmsData.config  = deepMerge(cmsData.config,       cfgDoc.data());
+    if (themeDoc?.exists)   cmsData.theme   = deepMerge(cmsData.theme,        themeDoc.data());
+    if (contentDoc?.exists) cmsData.content = deepMerge(cmsData.content,      contentDoc.data());
+    if (assetsDoc?.exists)  cmsData.assets  = deepMerge(cmsData.assets || {}, assetsDoc.data());
   }
 
   return cmsData;
@@ -236,10 +251,21 @@ async function loadAllData() {
 // ============================================================
 // LOGIN
 // ============================================================
+// ============================================================
+// LOGIN — Anti-brute-force, loading, mensagens claras
+// ============================================================
 const loginScreen = $('#loginScreen');
 const adminPanel  = $('#adminPanel');
 const loginForm   = $('#loginForm');
 const loginError  = $('#loginError');
+const loginBtn    = $('#loginBtn');
+
+// Controle de tentativas de login
+let loginAttempts  = 0;
+let loginBlocked   = false;
+let loginBlockTimer = null;
+const MAX_ATTEMPTS  = 5;
+const BLOCK_MS      = 30000; // 30 segundos
 
 function checkSession() {
   return sessionStorage.getItem('erika_admin_auth') === '1';
@@ -253,22 +279,73 @@ function clearSession() {
   sessionStorage.removeItem('erika_admin_auth');
 }
 
+function setLoginLoading(loading) {
+  if (!loginBtn) return;
+  const span = loginBtn.querySelector('.btn-text');
+  loginBtn.disabled = loading;
+  if (span) span.textContent = loading ? 'Verificando...' : 'Entrar';
+}
+
+function setLoginError(msg) {
+  if (loginError) loginError.textContent = msg;
+}
+
+function startLoginBlock() {
+  loginBlocked = true;
+  setLoginError(`Muitas tentativas. Aguarde 30 segundos.`);
+  if (loginBtn) loginBtn.disabled = true;
+
+  let remaining = 30;
+  const interval = setInterval(() => {
+    remaining--;
+    setLoginError(`Muitas tentativas. Aguarde ${remaining}s.`);
+    if (remaining <= 0) {
+      clearInterval(interval);
+      loginBlocked  = false;
+      loginAttempts = 0;
+      if (loginBtn) loginBtn.disabled = false;
+      setLoginError('');
+    }
+  }, 1000);
+}
+
 if (loginForm) {
   loginForm.addEventListener('submit', function(e) {
     e.preventDefault();
-    const user = $('#loginUser').value.trim();
-    const pass = $('#loginPass').value;
-    loginError.textContent = '';
 
-    if (user === ADMIN_CREDENTIALS.user && pass === ADMIN_CREDENTIALS.pass) {
-      setSession();
-      loginScreen.style.display = 'none';
-      adminPanel.style.display  = 'grid';
-      initAdmin();
-    } else {
-      loginError.textContent = 'Usuário ou senha incorretos.';
-      $('#loginPass').value = '';
-    }
+    // Bloquear múltiplos cliques e brute-force
+    if (loginBlocked || (loginBtn && loginBtn.disabled)) return;
+
+    const user = ($('#loginUser')?.value || '').trim();
+    const pass = ($('#loginPass')?.value || '');
+    setLoginError('');
+    setLoginLoading(true);
+
+    // Delay mínimo para evitar enumeração por timing
+    setTimeout(() => {
+      if (user === ADMIN_CREDENTIALS.user && pass === ADMIN_CREDENTIALS.pass) {
+        loginAttempts = 0;
+        setSession();
+        startAdmin();
+      } else {
+        loginAttempts++;
+        setLoginLoading(false);
+        const remaining = MAX_ATTEMPTS - loginAttempts;
+
+        if (loginAttempts >= MAX_ATTEMPTS) {
+          startLoginBlock();
+        } else {
+          setLoginError(
+            remaining === 1
+              ? 'Usuário ou senha incorretos. Última tentativa antes do bloqueio.'
+              : `Usuário ou senha incorretos. ${remaining} tentativa${remaining > 1 ? 's' : ''} restante${remaining > 1 ? 's' : ''}.`
+          );
+        }
+
+        if ($('#loginPass')) $('#loginPass').value = '';
+        if ($('#loginPass')) $('#loginPass').focus();
+      }
+    }, 600);
   });
 }
 
@@ -282,11 +359,19 @@ if (logoutBtn) {
   });
 }
 
-// Verifica sessão ao carregar
-if (checkSession()) {
+// Verifica sessão ao carregar — flag para evitar dupla inicialização
+let adminInitialized = false;
+
+function startAdmin() {
+  if (adminInitialized) return;
+  adminInitialized = true;
   loginScreen.style.display = 'none';
   adminPanel.style.display  = 'grid';
   initAdmin();
+}
+
+if (checkSession()) {
+  startAdmin();
 }
 
 // ============================================================
@@ -301,7 +386,6 @@ async function initAdmin() {
   setupSaveHandlers();
   setupThemeHandlers();
   setupImageHandlers();
-  setupFaqHandlers();
   setupBackupHandlers();
   setupContentSectionTabs();
   setupAddCardHandlers();
@@ -383,7 +467,7 @@ function populateGeral() {
   const c = cmsData.config || {};
   val('#cfg-siteTitle',  c.siteTitle  || '');
   val('#cfg-siteDesc',   c.siteDesc   || '');
-  val('#cfg-footerCrp',  c.footerCrp  || '');
+  val('#cfg-footerCredential', c.footerCredential || '');
   val('#cfg-footerTag',  c.footerTag  || '');
   val('#cfg-footerReach',c.footerReach|| '');
   val('#cfg-copyright',  c.copyright  || '');
@@ -815,7 +899,7 @@ function setupSaveHandlers() {
       const data = {
         siteTitle:   $('#cfg-siteTitle')?.value  || '',
         siteDesc:    $('#cfg-siteDesc')?.value   || '',
-        footerCrp:   $('#cfg-footerCrp')?.value  || '',
+        footerCredential: $('#cfg-footerCredential')?.value || '',
         footerTag:   $('#cfg-footerTag')?.value  || '',
         footerReach: $('#cfg-footerReach')?.value|| '',
         copyright:   $('#cfg-copyright')?.value  || '',
