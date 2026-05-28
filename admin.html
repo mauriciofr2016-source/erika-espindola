@@ -22,8 +22,8 @@
       </div>
       <form id="loginForm" novalidate>
         <div class="form-group">
-          <label for="loginUser">Usuário</label>
-          <input type="text" id="loginUser" autocomplete="username" placeholder="usuário" />
+          <label for="loginEmail">E-mail</label>
+          <input type="email" id="loginEmail" autocomplete="email" placeholder="erika@gmail.com" />
         </div>
         <div class="form-group">
           <label for="loginPass">Senha</label>
@@ -34,7 +34,7 @@
           <span class="btn-text">Entrar</span>
         </button>
       </form>
-      <p class="login-note">⚠️ Proteção básica visual. Login hardcoded não é seguro para produção. Para produção real, configure Firebase Authentication.</p>
+      <p class="login-note">🔒 Login seguro via Firebase Authentication. Configure o usuário no Firebase Console antes de acessar.</p>
     </div>
   </div>
 
@@ -122,7 +122,7 @@
           <div class="form-grid">
             <div class="form-group">
               <label>Credenciais / localização</label>
-              <input type="text" id="cfg-footerCredential" />
+              <input type="text" id="cfg-footerCrp" />
             </div>
             <div class="form-group">
               <label>Tagline do rodapé</label>
@@ -779,6 +779,7 @@
   <script src="cms-defaults.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-storage-compat.js"></script>
   <script src="firebase-config.js"></script>

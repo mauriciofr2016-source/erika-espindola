@@ -11,7 +11,6 @@
 'use strict';
 
 (async function() {
-  try {
 
   const STORAGE_KEY = 'erika_cms_data';
 
@@ -163,7 +162,7 @@
     }
 
     // Footer
-    if (c.footerCredential) setText('.footer__credential', c.footerCredential);
+    if (c.footerCrp)   setText('.footer__crp',     c.footerCrp);
     if (c.footerTag)   setText('.footer__tagline',  c.footerTag);
     if (c.footerReach) setText('.footer__reach',    c.footerReach);
     if (c.copyright)   setText('.footer__copy',     c.copyright);
@@ -640,11 +639,6 @@
       window.location.reload();
     });
     document.body.appendChild(banner);
-  }
-
-  } catch (e) {
-    // Falha silenciosa — o site público nunca quebra por erro do CMS loader
-    console.warn('[cms-loader] Erro não crítico no carregamento do CMS:', e && e.message || e);
   }
 
 })();

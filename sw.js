@@ -1,10 +1,10 @@
 /* ============================================================
    ERIKA ESPINDOLA - sw.js
    Service Worker / PWA Cache
-   v4 — footerCredential, login hardened, Firebase blindado
+   v5 — Firebase Auth no admin, sem credenciais hardcoded
    ============================================================ */
 
-const CACHE_NAME = 'erika-site-v4';
+const CACHE_NAME = 'erika-site-v5';
 
 const STATIC_ASSETS = [
   './',

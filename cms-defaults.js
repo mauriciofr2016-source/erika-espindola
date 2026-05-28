@@ -25,7 +25,7 @@ const CMS_DEFAULTS = {
     ogImage:     "assets/img/erika-hero.jpg",
     favicon:     "assets/icons/favicon.png",
     endereco:    "Goiânia — GO. Endereço completo informado após o agendamento.",
-    footerCredential: "Terapeuta — Goiânia, GO",
+    footerCrp:   "Terapeuta — Goiânia, GO",
     footerTag:   "Terapeuta com abordagem junguiana",
     footerReach: "Atendimento online para todo o Brasil",
     copyright:   "© 2025 Erika Espíndola. Todos os direitos reservados.",
