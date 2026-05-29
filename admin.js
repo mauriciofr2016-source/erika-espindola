@@ -166,42 +166,6 @@ function loadFromLocal() {
 }
 
 // ============================================================
-// FIREBASE — INICIALIZAÇÃO OPCIONAL
-// ============================================================
-function initFirebase() {
-  const statusEl = $('#firebaseStatus');
-
-  // Tenta carregar firebase-config.js (pode não existir)
-  if (!window.FIREBASE_CONFIG) {
-    if (statusEl) {
-      statusEl.className = 'firebase-status warning';
-      statusEl.querySelector('.firebase-status__text').textContent =
-        'Firebase não configurado. Usando armazenamento local (LocalStorage). Configure firebase-config.js para persistência multi-dispositivo.';
-    }
-    return;
-  }
-
-  try {
-    if (typeof firebase !== 'undefined') {
-      if (!firebase.apps.length) firebase.initializeApp(window.FIREBASE_CONFIG);
-      db = firebase.firestore();
-      storage = firebase.storage();
-      firebaseAvailable = true;
-      if (statusEl) {
-        statusEl.className = 'firebase-status connected';
-        statusEl.querySelector('.firebase-status__text').textContent = 'Firebase conectado com sucesso.';
-      }
-    }
-  } catch (e) {
-    console.warn('Firebase init error:', e);
-    if (statusEl) {
-      statusEl.className = 'firebase-status error';
-      statusEl.querySelector('.firebase-status__text').textContent = 'Erro ao conectar ao Firebase. Usando armazenamento local.';
-    }
-  }
-}
-
-// ============================================================
 // SALVAR DADOS (Firebase ou Local)
 // ============================================================
 async function saveSection(section, data) {
