@@ -13,23 +13,23 @@
 }
 
 :root {
-  /* Cores */
-  --cream:        #f7f3ee;
-  --cream-dark:   #f0ebe3;
-  --sand:         #e8ddd0;
-  --sand-mid:     #d6c9b8;
-  --mocha:        #9c7b5a;
-  --mocha-dark:   #7a5c3e;
-  --mocha-light:  #b8956f;
-  --brown-soft:   #c4a882;
-  --nude:         #e6d5c3;
-  --warm-gray:    #9e9188;
-  --warm-gray-lt: #cfc8c0;
-  --text-dark:    #2d2520;
-  --text-mid:     #5a4e45;
-  --text-light:   #8a7d73;
+  /* Nova paleta baseada na referência enviada */
+  --cream:        #FAF6F2;
+  --cream-dark:   #F5ECE7;
+  --sand:         #EFE3DB;
+  --sand-mid:     #E4D4CA;
+  --mocha:        #B76E79;
+  --mocha-dark:   #9F5C66;
+  --mocha-light:  #C98A94;
+  --brown-soft:   #D8B7AE;
+  --nude:         #F2E7E1;
+  --warm-gray:    #8A817C;
+  --warm-gray-lt: #D8D0CB;
+  --text-dark:    #4B4541;
+  --text-mid:     #6E6E6E;
+  --text-light:   #9C928C;
   --white:        #ffffff;
-  --overlay:      rgba(45,37,32,.04);
+  --overlay:      rgba(183,110,121,.04);
 
   /* Tipografia */
   --font-display: 'Cormorant Garamond', Georgia, serif;
@@ -46,9 +46,9 @@
   --ease-out:     cubic-bezier(.16,1,.3,1);
 
   /* Sombras */
-  --shadow-sm:    0 2px 16px rgba(156,123,90,.10);
-  --shadow-md:    0 8px 40px rgba(156,123,90,.14);
-  --shadow-lg:    0 20px 64px rgba(156,123,90,.16);
+  --shadow-sm:    0 2px 16px rgba(183,110,121,.10);
+  --shadow-md:    0 8px 40px rgba(183,110,121,.14);
+  --shadow-lg:    0 20px 64px rgba(183,110,121,.16);
 
   /* Bordas */
   --radius-sm:    12px;
@@ -102,7 +102,10 @@ button {
 
 .section {
   padding-block: var(--section-v);
+  scroll-margin-top: 96px;
 }
+
+.section-label:empty { display: none; }
 
 .section-label {
   font-family: var(--font-body);
@@ -1509,4 +1512,391 @@ button {
   outline: 2px solid var(--mocha);
   outline-offset: 3px;
   border-radius: 4px;
+}
+
+/* Ajustes Espaço Erika v2 */
+.cms-two-col { align-items: center; }
+.cms-image-card img { width: 100%; height: 100%; min-height: 420px; object-fit: cover; border-radius: var(--radius-xl); display: block; }
+.cms-services-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; margin-top: 52px; }
+.cms-services-grid .service-card:last-child { grid-column: 1 / -1; }
+.service-card p + p { margin-top: 16px; color: var(--text-mid); }
+.cms-oficinas-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; margin-top: 48px; }
+.cms-diferenciais { list-style: none; padding: 0; margin: 28px 0 0; display: grid; gap: 12px; }
+.cms-diferenciais li { position: relative; padding-left: 28px; color: var(--text-mid); line-height: 1.75; }
+.cms-diferenciais li::before { content: ''; position: absolute; left: 0; top: .82em; width: 10px; height: 10px; border-radius: 50%; background: var(--mocha); opacity: .7; }
+.wa-float { position: fixed; right: 22px; bottom: 22px; z-index: 50; background: var(--mocha); color: #fff; padding: 14px 20px; border-radius: 999px; box-shadow: 0 14px 35px rgba(0,0,0,.18); font-size: 14px; letter-spacing: .03em; }
+.wa-float:hover { background: var(--mocha-dark); transform: translateY(-2px); }
+@media (max-width: 900px) { .cms-services-grid, .cms-oficinas-grid { grid-template-columns: 1fr; } .cms-services-grid .service-card:last-child { grid-column: auto; } .cms-image-card img { min-height: 320px; } }
+
+
+/* Ajustes finais de legibilidade e destaque — v3 */
+.atendimentos,
+.junguiana,
+.processo,
+.horarios,
+.contato {
+  background:
+    radial-gradient(circle at 12% 18%, rgba(196, 168, 130, .18), transparent 34%),
+    linear-gradient(180deg, #f4eee7 0%, #efe6dc 100%);
+}
+
+.atendimentos .section-title,
+.junguiana .section-title,
+.processo .section-title,
+.horarios .section-title,
+.contato .section-title,
+.contato .section-sub {
+  max-width: 920px;
+}
+
+.atendimentos__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+  margin-top: 46px;
+}
+
+.atend-card,
+.trabalho__card.service-card,
+.horario-card,
+.timeline__item,
+.contato__card,
+.contato__form {
+  background: rgba(255, 252, 248, .88);
+  border: 1px solid rgba(156, 123, 90, .24);
+  box-shadow: 0 18px 48px rgba(74, 53, 36, .07);
+}
+
+.atend-card,
+.trabalho__card.service-card,
+.horario-card {
+  min-height: 150px;
+}
+
+.atend-card h3,
+.trabalho__card.service-card h3,
+.horario-card h3,
+.timeline__item h3,
+.contato__card h3,
+.contato__form h3 {
+  color: var(--mocha-dark);
+}
+
+.atend-card p,
+.trabalho__card.service-card p,
+.horario-card p,
+.timeline__item p,
+.contato__card p {
+  color: var(--text-mid);
+}
+
+.processo .timeline {
+  gap: 16px;
+  margin-top: 44px;
+}
+
+.processo .timeline::before { display: none; }
+
+.processo .timeline__item {
+  display: grid;
+  grid-template-columns: 62px 220px 1fr;
+  align-items: center;
+  gap: 24px;
+  padding: 24px 28px;
+  border-radius: var(--radius-md);
+  border-bottom: 1px solid rgba(156, 123, 90, .24);
+}
+
+.processo .timeline__num {
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--nude);
+  color: var(--mocha-dark);
+  padding: 0;
+}
+
+.processo .timeline__item h3 { margin: 0; }
+.processo .timeline__item p { margin: 0; line-height: 1.7; }
+
+.contato {
+  background:
+    radial-gradient(circle at 85% 18%, rgba(156, 123, 90, .15), transparent 34%),
+    linear-gradient(180deg, #f5efe8 0%, #eadfD3 100%);
+}
+
+.contato__inner { margin-top: 42px; }
+
+.contato__card {
+  padding: 28px;
+  background: rgba(255, 252, 248, .94);
+}
+
+.contato__icon {
+  background: var(--mocha);
+  color: var(--white);
+}
+
+.contato__link {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 4px;
+  padding: 9px 16px;
+  border-radius: 999px;
+  background: var(--mocha);
+  color: var(--white);
+  text-decoration: none;
+  box-shadow: 0 10px 24px rgba(122, 92, 62, .18);
+}
+
+.contato__link:hover { background: var(--mocha-dark); }
+
+.contato__form {
+  background: rgba(247, 243, 238, .96);
+  box-shadow: 0 24px 70px rgba(74, 53, 36, .10);
+}
+
+@media (max-width: 900px) {
+  .atendimentos__grid,
+  .processo .timeline__item {
+    grid-template-columns: 1fr;
+  }
+  .processo .timeline__item { gap: 12px; }
+}
+
+
+/* Ajuste visual v4 — mais contraste, cards mais fortes e topo destacado */
+.header {
+  background: rgba(232, 211, 190, .96);
+  border-bottom: 1px solid rgba(122, 92, 62, .18);
+  box-shadow: 0 10px 34px rgba(74, 53, 36, .08);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+.header.scrolled {
+  background: rgba(224, 199, 173, .97);
+  box-shadow: 0 10px 34px rgba(74, 53, 36, .12);
+}
+.logo-name { color: var(--mocha-dark); font-weight: 600; }
+.logo-sub { color: var(--mocha-dark); font-weight: 500; }
+.nav__link { color: #4b392c; font-size: .88rem; font-weight: 500; }
+.nav__link:hover { color: var(--white); background: var(--mocha); }
+.header__cta.btn--outline {
+  background: var(--mocha);
+  color: var(--white);
+  border-color: var(--mocha);
+  box-shadow: 0 8px 22px rgba(122, 92, 62, .18);
+}
+.header__cta.btn--outline:hover { background: var(--mocha-dark); border-color: var(--mocha-dark); }
+
+.atend-card,
+.trabalho__card.service-card,
+.horario-card,
+.timeline__item,
+.contato__card {
+  background: linear-gradient(145deg, #a78360 0%, #927050 100%) !important;
+  border: 1px solid rgba(255, 255, 255, .24) !important;
+  box-shadow: 0 20px 54px rgba(74, 53, 36, .18) !important;
+}
+
+.atend-card h3,
+.trabalho__card.service-card h3,
+.horario-card h3,
+.timeline__item h3,
+.contato__card h3 {
+  color: #fffaf4 !important;
+  font-size: clamp(1.2rem, 1.7vw, 1.55rem);
+  font-weight: 500;
+}
+
+.atend-card p,
+.trabalho__card.service-card p,
+.trabalho__card.service-card p + p,
+.horario-card p,
+.timeline__item p,
+.contato__card p {
+  color: rgba(255, 250, 244, .92) !important;
+  font-size: clamp(1rem, 1.15vw, 1.1rem);
+  line-height: 1.78;
+}
+
+.trabalho__card.service-card strong,
+.horario-card strong,
+.atend-card strong,
+.timeline__item strong,
+.contato__card strong {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.processo .timeline__num,
+.contato__icon {
+  background: rgba(255, 250, 244, .22) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255,255,255,.22);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.contato__link {
+  background: #fffaf4 !important;
+  color: var(--mocha-dark) !important;
+  font-size: .95rem;
+  font-weight: 600;
+}
+.contato__link:hover { background: #f0e3d6 !important; color: var(--mocha-dark) !important; }
+
+.contato__form {
+  background: linear-gradient(180deg, #ead8c6 0%, #dfc5aa 100%) !important;
+  border-color: rgba(122, 92, 62, .24) !important;
+}
+.contato__form h3 { font-size: clamp(1.55rem, 2vw, 2rem); color: var(--mocha-dark); }
+.contato__form .form-sub,
+.contato__form label { color: #5a3f2b; font-size: .9rem; }
+.contato__form input,
+.contato__form select,
+.contato__form textarea {
+  font-size: 1rem;
+  color: var(--text-dark);
+  background: rgba(255, 252, 248, .98);
+}
+
+.section-title { font-size: clamp(2.25rem, 4.5vw, 3.75rem); }
+.section-sub { font-size: clamp(1.05rem, 1.4vw, 1.18rem); color: #4f4036; }
+
+.footer__dev {
+  margin-top: 10px;
+  font-size: .72rem;
+  color: rgba(247, 243, 238, .62);
+}
+.footer__dev a { color: rgba(247, 243, 238, .78); text-decoration: underline; text-underline-offset: 3px; }
+.footer__dev a:hover { color: #fff; }
+
+@media (max-width: 900px) {
+  .nav__link { font-size: 1rem; }
+  .atend-card p,
+  .trabalho__card.service-card p,
+  .horario-card p,
+  .timeline__item p,
+  .contato__card p { font-size: 1rem; }
+}
+
+
+/* Ajuste visual v5 — cards em bege claro, menores e galeria do espaço restaurada */
+.trabalho__grid.cms-two-col {
+  grid-template-columns: minmax(0, .9fr) minmax(420px, 1.1fr);
+  align-items: center;
+  gap: clamp(28px, 5vw, 68px);
+}
+.cms-space-gallery {
+  margin-top: 0;
+}
+#sobre .espaco__gallery {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(180px, .9fr);
+  gap: 18px;
+}
+#sobre .espaco__main img {
+  min-height: 430px;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--radius-xl);
+  box-shadow: 0 24px 58px rgba(74, 53, 36, .12);
+}
+#sobre .espaco__side {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+#sobre .espaco__side-img img {
+  width: 100%;
+  height: 206px;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 18px 42px rgba(74, 53, 36, .10);
+}
+
+.atend-card,
+.trabalho__card.service-card,
+.horario-card,
+.timeline__item,
+.contato__card {
+  background: linear-gradient(145deg, #f5ede3 0%, #eadccf 100%) !important;
+  border: 1px solid rgba(156, 123, 90, .26) !important;
+  box-shadow: 0 16px 38px rgba(74, 53, 36, .09) !important;
+}
+.atend-card,
+.trabalho__card.service-card,
+.horario-card {
+  min-height: auto !important;
+  padding: clamp(22px, 2.3vw, 30px) !important;
+}
+.atendimentos__grid,
+.cms-services-grid,
+.cms-oficinas-grid {
+  gap: 18px !important;
+}
+.atendimentos__grid { margin-top: 34px !important; }
+.cms-services-grid { margin-top: 36px !important; }
+.cms-oficinas-grid { margin-top: 34px !important; }
+
+.atend-card h3,
+.trabalho__card.service-card h3,
+.horario-card h3,
+.timeline__item h3,
+.contato__card h3 {
+  color: var(--mocha-dark) !important;
+  font-size: clamp(1.12rem, 1.45vw, 1.34rem) !important;
+  line-height: 1.28 !important;
+}
+.atend-card p,
+.trabalho__card.service-card p,
+.trabalho__card.service-card p + p,
+.horario-card p,
+.timeline__item p,
+.contato__card p {
+  color: #4d3e35 !important;
+  font-size: clamp(1rem, 1.08vw, 1.08rem) !important;
+  line-height: 1.68 !important;
+}
+.trabalho__card.service-card strong,
+.horario-card strong,
+.atend-card strong,
+.timeline__item strong,
+.contato__card strong {
+  color: var(--mocha-dark) !important;
+}
+.processo .timeline { gap: 12px !important; margin-top: 32px !important; }
+.processo .timeline__item {
+  padding: 18px 24px !important;
+  grid-template-columns: 52px 190px 1fr !important;
+}
+.processo .timeline__num,
+.contato__icon {
+  background: var(--mocha) !important;
+  color: #fff !important;
+  border-color: rgba(122, 92, 62, .15) !important;
+}
+.contato__card { padding: 22px !important; }
+.contato__link {
+  background: var(--mocha) !important;
+  color: #fff !important;
+}
+.contato__link:hover { background: var(--mocha-dark) !important; color: #fff !important; }
+
+@media (max-width: 980px) {
+  .trabalho__grid.cms-two-col { grid-template-columns: 1fr; }
+  #sobre .espaco__gallery { grid-template-columns: 1fr; }
+  #sobre .espaco__side { flex-direction: row; }
+  #sobre .espaco__main img { min-height: 320px; }
+  #sobre .espaco__side-img img { height: 190px; }
+  .processo .timeline__item { grid-template-columns: 1fr !important; }
+}
+@media (max-width: 560px) {
+  #sobre .espaco__side { flex-direction: column; }
+  #sobre .espaco__side-img img { height: 210px; }
+  .atend-card, .trabalho__card.service-card, .horario-card { padding: 20px !important; }
 }

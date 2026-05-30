@@ -1,6 +1,6 @@
 # Erika Espíndola — Site Institucional
 
-Site institucional com painel administrativo (CMS) e login seguro via Firebase Authentication.
+Site institucional com painel administrativo para edição de conteúdo.
 
 ---
 
@@ -12,14 +12,14 @@ Site institucional com painel administrativo (CMS) e login seguro via Firebase A
 ├── script.js               # Scripts do site público
 ├── cms-defaults.js         # Conteúdo padrão (fallback)
 ├── cms-loader.js           # Aplica conteúdo CMS ao site público
-├── legal-loader.js         # Aplica textos legais editados pelo admin
+├── legal-loader.js         # Aplica textos legais editados em terms/privacy
 ├── admin.html              # Painel administrativo
 ├── admin.css               # Estilos do painel admin
-├── admin.js                # Scripts do painel admin (Firebase Auth)
-├── firebase-config.js      # Configuração real do Firebase (não commitar com dados)
-├── firebase-config.example.js  # Modelo de configuração
+├── admin.js                # Scripts do painel admin
+├── firebase-config.js      # Configuração local do Firebase (fallback seguro vazio)
+├── firebase-config.example.js  # Modelo de configuração do Firebase
 ├── manifest.json           # PWA manifest
-├── sw.js                   # Service Worker (v5)
+├── sw.js                   # Service Worker (v3)
 ├── privacy.html            # Política de Privacidade
 ├── terms.html              # Termos de Uso
 └── assets/
@@ -27,45 +27,47 @@ Site institucional com painel administrativo (CMS) e login seguro via Firebase A
     └── icons/              # Ícones PWA
 ```
 
+Os caminhos usados no projeto seguem formato web com barra `/`, por exemplo `assets/img/erika-hero.jpg` e `assets/icons/icon-192.png`. Isso mantém compatibilidade com GitHub Pages/Linux. Não use caminhos com `\` no HTML, CSS, JS, manifest ou service worker.
+
 ---
 
 ## Acesso ao Painel Admin
 
 1. Acesse `/admin.html`
-2. Informe o **e-mail**: `erika@gmail.com`
-3. Informe a **senha** cadastrada no Firebase Console
+2. Usuário: `erika`
+3. Senha: `223687`
 
-> O admin usa **Firebase Authentication** real.
-> Não há mais usuário/senha hardcoded no código.
-> A sessão persiste entre abas e recarregamentos enquanto não fizer logout.
+> ⚠️ **AVISO DE SEGURANÇA**: Login hardcoded não é seguro para produção. Esse login é uma proteção básica de interface.
+> Qualquer pessoa que inspecionar o código-fonte pode ver as credenciais.
+> Para produção real, implemente Firebase Authentication conforme descrito abaixo.
+
+### Como trocar o usuário/senha
+
+Edite as primeiras linhas do arquivo `admin.js`:
+
+```js
+const ADMIN_CREDENTIALS = {
+  user: 'erika',   // ← altere aqui
+  pass: '223687'   // ← altere aqui
+};
+```
 
 ---
 
-## Configuração do Firebase
+## Configuração do Firebase (recomendado para produção)
 
-### 1. Criar projeto no Firebase Console
+Para que as edições do admin apareçam para todos os visitantes (não apenas no mesmo navegador), configure o Firebase:
+
+### 1. Crie um projeto no Firebase Console
 
 Acesse: https://console.firebase.google.com
 
-### 2. Ativar os serviços necessários
+### 2. Ative Firestore e Storage
 
-- **Authentication** → Ativar o provedor **E-mail/senha**
-- **Firestore Database** → Criar banco em modo produção
-- **Storage** → Ativar para upload de imagens
+- **Firestore Database**: crie no modo de produção
+- **Storage**: ative para upload de imagens
 
-### 3. Criar o usuário administrador
-
-No Firebase Console:
-→ Authentication → Users → Add user
-- **E-mail**: `erika@gmail.com`
-- **Senha**: defina uma senha segura
-
-> Se precisar mudar o e-mail autorizado, edite apenas esta linha em `admin.js`:
-> ```js
-> const AUTHORIZED_EMAIL = 'erika@gmail.com';
-> ```
-
-### 4. Configurar as credenciais do app
+### 3. Configure as credenciais
 
 Copie `firebase-config.example.js` para `firebase-config.js` e preencha:
 
@@ -80,45 +82,15 @@ window.FIREBASE_CONFIG = {
 };
 ```
 
-> **Segurança**: `firebase-config.js` pode estar no repositório pois as credenciais
-> do Firebase Web SDK são públicas por design. A segurança real vem das Regras do
-> Firestore/Storage e do Firebase Auth.
+### 4. Scripts Firebase já carregados
 
-### 5. Regras de segurança — Firestore
+`admin.html`, `index.html`, `terms.html` e `privacy.html` já carregam os SDKs compatíveis do Firebase e o arquivo `firebase-config.js`.
 
-```
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    // Leitura pública para o site funcionar
-    match /{document=**} {
-      allow read: if true;
-    }
-    // Escrita apenas para o admin autenticado
-    match /{document=**} {
-      allow write: if request.auth != null
-                   && request.auth.token.email == "erika@gmail.com";
-    }
-  }
-}
-```
+Se `firebase-config.js` ficar vazio (`window.FIREBASE_CONFIG = window.FIREBASE_CONFIG || null;`), o projeto não quebra: o site usa o HTML original e o admin salva apenas no LocalStorage do navegador. Para salvar online e mostrar as edições para todos os usuários, é obrigatório preencher `firebase-config.js`, ativar Firestore/Storage e configurar regras.
 
-### 6. Regras de segurança — Storage
+### 5. Coleções no Firestore
 
-```
-rules_version = '2';
-service firebase.storage {
-  match /b/{bucket}/o {
-    match /{allPaths=**} {
-      allow read:  if true;
-      allow write: if request.auth != null
-                   && request.auth.token.email == "erika@gmail.com";
-    }
-  }
-}
-```
-
-### 7. Coleções usadas no Firestore
+O painel usa as seguintes coleções:
 
 | Coleção | Documento | Conteúdo |
 |---------|-----------|----------|
@@ -126,7 +98,116 @@ service firebase.storage {
 | `site_content` | `main` | Textos, cards, FAQ, menu |
 | `site_theme` | `main` | Cores, espaçamentos, bordas |
 | `site_assets` | `main` | URLs e alts das imagens |
-| `site_meta` | `main` | Metadados de atualização |
+| `site_meta` | `main` | Versão/última atualização do CMS |
+
+O site público tenta carregar nesta ordem:
+
+1. Firestore
+2. LocalStorage
+3. HTML original como fallback seguro
+
+Em celular Android/iOS, quando o admin salva uma alteração no Firestore, o site público recebe um aviso discreto de “Nova atualização disponível”. Ao tocar em “Atualizar”, a página recarrega e busca o conteúdo mais recente.
+
+### 6. Regras de segurança sugeridas (Firestore)
+
+#### Regra temporária apenas para teste
+
+Use por poucos minutos em ambiente de teste para confirmar se o admin grava no Firestore. Não use em produção.
+
+```
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read: if true;
+      allow write: if true;
+    }
+  }
+}
+```
+
+#### Regra bloqueada segura
+
+Esta regra é segura para leitura pública, mas bloqueia qualquer escrita do admin. Com `allow write: if false`, o painel continuará funcionando só no fallback local.
+
+```
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read: if true;    // site público lê livremente
+      allow write: if false;  // escrita controlada
+    }
+  }
+}
+```
+
+#### Regra recomendada com Firebase Auth
+
+Crie Firebase Authentication e libere escrita apenas para o UID administrador.
+
+```
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.uid == "COLOQUE_AQUI_O_UID_ADMIN";
+    }
+
+    match /{document=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+  }
+}
+```
+
+### Regras de segurança sugeridas (Storage)
+
+#### Storage temporário apenas para teste
+
+```
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /{allPaths=**} {
+      allow read: if true;
+      allow write: if true;
+    }
+  }
+}
+```
+
+#### Storage seguro com Auth
+
+```
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.uid == "COLOQUE_AQUI_O_UID_ADMIN";
+    }
+
+    match /images/{fileName} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+  }
+}
+```
+
+Para produção com upload pelo painel, use a regra com Firebase Auth. Regras temporárias abertas servem apenas para teste rápido.
+
+---
+
+## Segurança do CMS
+
+- O login hardcoded (`erika` / `223687`) é apenas proteção visual e não deve ser considerado segurança real.
+- O caminho recomendado é migrar o login para Firebase Auth e restringir escrita no Firestore/Storage por UID administrador.
+- Campos com HTML nos textos legais e nos blocos dinâmicos são sanitizados para remover scripts, eventos inline e URLs perigosas.
+- Mesmo com sanitização no frontend, só conceda acesso ao admin para pessoas confiáveis.
 
 ---
 
@@ -135,12 +216,12 @@ service firebase.storage {
 ### GitHub Pages
 
 1. Faça push para o repositório GitHub
-2. Settings → Pages → selecione a branch `main`
-3. Disponível em `https://seuusuario.github.io/nomerepo/`
+2. Vá em Settings → Pages → selecione a branch `main`
+3. O site ficará disponível em `https://seuusuario.github.io/nomerepo/`
 
 ### Netlify / Vercel
 
-Conecte o repositório e faça deploy direto.
+Conecte o repositório e faça deploy direto. Não requer configuração adicional para o site estático.
 
 ---
 
@@ -148,32 +229,35 @@ Conecte o repositório e faça deploy direto.
 
 Se o Firebase não estiver configurado:
 - O site público usa o conteúdo do `index.html` original como fallback
-- O painel admin exibe: "Firebase Auth não configurado. Configure o Firebase para usar o painel online."
+- As edições do admin são salvas no **LocalStorage** do navegador
+- As edições só aparecem no mesmo navegador/dispositivo
 - WhatsApp, formulário e PWA continuam funcionando normalmente
 
 ---
 
 ## Como atualizar o cache PWA
 
-Incremente a versão em `sw.js` após mudanças grandes:
+Sempre que fizer mudanças grandes no site, incremente a versão no `sw.js`:
 
 ```js
-const CACHE_NAME = 'erika-site-v6'; // ← incrementar
+const CACHE_NAME = 'erika-site-v3'; // ← incrementar
 ```
 
 ---
 
 ## Aviso Legal
 
-Linguagem usada no site:
+A Erika Espíndola é apresentada no site como terapeuta com abordagem junguiana.
+O site usa linguagem adequada para essa atuação:
 
-✅ Terapeuta
-✅ Atendimento terapêutico
-✅ Escuta terapêutica
-✅ Abordagem junguiana
-✅ Autoconhecimento
-✅ Desenvolvimento pessoal
+✅ Terapeuta  
+✅ Atendimento terapêutico  
+✅ Escuta terapêutica  
+✅ Abordagem junguiana  
+✅ Autoconhecimento  
+✅ Desenvolvimento pessoal  
 
-❌ Psicóloga (exige CRP regulamentado)
-❌ Psicoterapia (no sentido clínico regulamentado pelo CFP)
-❌ Promessas de cura ou resultado garantido
+❌ Títulos profissionais regulamentados sem habilitação formal  
+❌ Termos clínicos regulamentados usados como oferta profissional  
+❌ Afirmações que sugiram exercício profissional regulamentado por conselho de classe  
+❌ Promessas de cura ou resultado garantido  

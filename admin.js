@@ -1,20 +1,24 @@
 /* ============================================================
    ERIKA ESPÍNDOLA — admin.js
    Painel Administrativo
-   Login via Firebase Authentication (email/senha).
-   Sem credenciais hardcoded. Sem senha no localStorage.
+   
+   AVISO: O login simples (usuário/senha hardcoded) é apenas
+   proteção básica de interface. Para produção real, configure
+   Firebase Authentication e remova as credenciais daqui.
    ============================================================ */
 
 'use strict';
 
 // ============================================================
-// EMAIL AUTORIZADO — único ponto de configuração
-// Altere aqui se o e-mail do admin mudar.
-// Não armazena senha. A autenticação é delegada ao Firebase.
+// CREDENCIAIS DE ACESSO — APENAS PROTEÇÃO BÁSICA DE INTERFACE
+// Para produção real, use Firebase Authentication
 // ============================================================
-const AUTHORIZED_EMAIL = 'erika@gmail.com';
+const ADMIN_CREDENTIALS = {
+  user: 'erika',
+  pass: '223687'
+};
 
-// Chave de armazenamento local (apenas dados CMS, nunca senha)
+// Chave de armazenamento local
 const STORAGE_KEY = 'erika_cms_data';
 
 // Referência ao CMS_DEFAULTS (definido em cms-defaults.js)
@@ -23,59 +27,10 @@ const DEFAULTS = (typeof CMS_DEFAULTS !== 'undefined') ? CMS_DEFAULTS : {};
 // Estado atual do CMS
 let cmsData = {};
 
-// ============================================================
-// FIREBASE — INICIALIZAÇÃO (Firestore + Storage + Auth)
-// Sem credenciais hardcoded. Fallback seguro se não configurado.
-// ============================================================
-
-// Referências globais Firebase
-let db              = null;
-let storage         = null;
-let auth            = null;
+// Firebase referências (preenchidas se disponível)
+let db = null;
+let storage = null;
 let firebaseAvailable = false;
-
-function initFirebase() {
-  const statusEl = $('#firebaseStatus');
-
-  function setStatus(state, msg) {
-    if (!statusEl) return;
-    statusEl.className = 'firebase-status ' + state;
-    const txt = statusEl.querySelector('.firebase-status__text');
-    if (txt) txt.textContent = msg;
-  }
-
-  // Sem config ou config vazia → fallback local
-  if (!window.FIREBASE_CONFIG || typeof window.FIREBASE_CONFIG !== 'object') {
-    setStatus('warning',
-      'Firebase não configurado. Usando armazenamento local. Configure firebase-config.js para persistência multi-dispositivo.');
-    return;
-  }
-
-  // SDK não carregado (ex: offline)
-  if (typeof firebase === 'undefined') {
-    setStatus('warning', 'Firebase SDK não carregado. Usando armazenamento local.');
-    return;
-  }
-
-  try {
-    if (!firebase.apps || !firebase.apps.length) {
-      firebase.initializeApp(window.FIREBASE_CONFIG);
-    }
-    db      = firebase.firestore();
-    storage = firebase.storage();
-    auth    = firebase.auth();
-    firebaseAvailable = true;
-    setStatus('connected', 'Firebase conectado. Autenticação ativa.');
-  } catch (e) {
-    console.warn('[Admin] Firebase init error:', e.message || e);
-    db      = null;
-    storage = null;
-    auth    = null;
-    firebaseAvailable = false;
-    setStatus('error',
-      'Erro ao conectar ao Firebase. Usando armazenamento local. Verifique firebase-config.js.');
-  }
-}
 
 // ============================================================
 // UTILITÁRIOS
@@ -166,6 +121,42 @@ function loadFromLocal() {
 }
 
 // ============================================================
+// FIREBASE — INICIALIZAÇÃO OPCIONAL
+// ============================================================
+function initFirebase() {
+  const statusEl = $('#firebaseStatus');
+
+  // Tenta carregar firebase-config.js (pode não existir)
+  if (!window.FIREBASE_CONFIG) {
+    if (statusEl) {
+      statusEl.className = 'firebase-status warning';
+      statusEl.querySelector('.firebase-status__text').textContent =
+        'Firebase não configurado. Usando armazenamento local (LocalStorage). Configure firebase-config.js para persistência multi-dispositivo.';
+    }
+    return;
+  }
+
+  try {
+    if (typeof firebase !== 'undefined') {
+      if (!firebase.apps.length) firebase.initializeApp(window.FIREBASE_CONFIG);
+      db = firebase.firestore();
+      storage = firebase.storage();
+      firebaseAvailable = true;
+      if (statusEl) {
+        statusEl.className = 'firebase-status connected';
+        statusEl.querySelector('.firebase-status__text').textContent = 'Firebase conectado com sucesso.';
+      }
+    }
+  } catch (e) {
+    console.warn('Firebase init error:', e);
+    if (statusEl) {
+      statusEl.className = 'firebase-status error';
+      statusEl.querySelector('.firebase-status__text').textContent = 'Erro ao conectar ao Firebase. Usando armazenamento local.';
+    }
+  }
+}
+
+// ============================================================
 // SALVAR DADOS (Firebase ou Local)
 // ============================================================
 async function saveSection(section, data) {
@@ -217,6 +208,7 @@ async function loadAllData() {
   // Override com dados locais
   const local = loadFromLocal();
   if (local) {
+    if (local.content && local.content.layoutVersion !== 'espaco-erika-v2-2026-05-30') local.content = DEFAULTS.content || {};
     cmsData = deepMerge(cmsData, local);
   }
 
@@ -232,7 +224,12 @@ async function loadAllData() {
 
       if (cfgDoc.exists)     cmsData.config  = deepMerge(cmsData.config,  cfgDoc.data());
       if (themeDoc.exists)   cmsData.theme   = deepMerge(cmsData.theme,   themeDoc.data());
-      if (contentDoc.exists) cmsData.content = deepMerge(cmsData.content, contentDoc.data());
+      if (contentDoc.exists) {
+        const incomingContent = contentDoc.data();
+        cmsData.content = incomingContent.layoutVersion === 'espaco-erika-v2-2026-05-30'
+          ? deepMerge(cmsData.content, incomingContent)
+          : deepMerge(cmsData.content, DEFAULTS.content || {});
+      }
       if (assetsDoc.exists)  cmsData.assets  = deepMerge(cmsData.assets || {}, assetsDoc.data());
     } catch (e) {
       console.warn('Erro ao carregar Firebase, usando dados locais:', e);
@@ -243,167 +240,66 @@ async function loadAllData() {
 }
 
 // ============================================================
-// LOGIN — Firebase Authentication (email/senha)
-// Sem credenciais hardcoded. Sem senha salva localmente.
+// LOGIN
 // ============================================================
 const loginScreen = $('#loginScreen');
 const adminPanel  = $('#adminPanel');
 const loginForm   = $('#loginForm');
 const loginError  = $('#loginError');
-const loginBtn    = $('#loginBtn');
 
-// Flag: impede dupla inicialização do painel
-let adminInitialized = false;
-
-function setLoginError(msg) {
-  if (loginError) loginError.textContent = msg;
+function checkSession() {
+  return sessionStorage.getItem('erika_admin_auth') === '1';
 }
 
-function setLoginLoading(loading) {
-  if (!loginBtn) return;
-  const span = loginBtn.querySelector('.btn-text');
-  loginBtn.disabled = loading;
-  if (span) span.textContent = loading ? 'Entrando...' : 'Entrar';
+function setSession() {
+  sessionStorage.setItem('erika_admin_auth', '1');
 }
 
-function showPanel() {
-  if (adminInitialized) return;
-  adminInitialized = true;
-  if (loginScreen) loginScreen.style.display = 'none';
-  if (adminPanel)  adminPanel.style.display   = 'grid';
-  initAdmin();
+function clearSession() {
+  sessionStorage.removeItem('erika_admin_auth');
 }
 
-function showLoginWithError(msg) {
-  if (loginScreen) loginScreen.style.display = '';
-  if (adminPanel)  adminPanel.style.display  = 'none';
-  setLoginLoading(false);
-  setLoginError(msg);
-  adminInitialized = false;
-  // Faz logout do Firebase para não manter sessão não autorizada
-  if (auth) auth.signOut().catch(() => {});
-}
-
-// ---- Inicializa Firebase e observa estado de autenticação -----
-function initAuthAndListen() {
-  // Sem Firebase configurado: mostrar mensagem clara, não quebrar tela
-  if (!window.FIREBASE_CONFIG || typeof firebase === 'undefined') {
-    setLoginError('Firebase Auth não configurado. Configure o Firebase para usar o painel online.');
-    setLoginLoading(false);
-    return;
-  }
-
-  // Inicializa Firebase (idempotente)
-  initFirebase();
-
-  if (!auth) {
-    setLoginError('Firebase Auth não disponível. Verifique firebase-config.js.');
-    return;
-  }
-
-  // Observa mudanças de estado de autenticação (persiste entre recarregamentos)
-  auth.onAuthStateChanged((user) => {
-    if (!user) {
-      // Usuário não logado: garante que tela de login está visível
-      if (adminInitialized) {
-        adminInitialized = false;
-        if (loginScreen) loginScreen.style.display = '';
-        if (adminPanel)  adminPanel.style.display  = 'none';
-      }
-      setLoginLoading(false);
-      return;
-    }
-
-    // Verifica se é o e-mail autorizado
-    if (user.email !== AUTHORIZED_EMAIL) {
-      showLoginWithError('Usuário não autorizado.');
-      return;
-    }
-
-    // Autenticado e autorizado: abre painel
-    showPanel();
-  });
-}
-
-// ---- Submit do formulário de login ----------------------------
 if (loginForm) {
-  loginForm.addEventListener('submit', async function(e) {
+  loginForm.addEventListener('submit', function(e) {
     e.preventDefault();
+    const user = $('#loginUser').value.trim();
+    const pass = $('#loginPass').value;
+    loginError.textContent = '';
 
-    // Previne múltiplos cliques
-    if (loginBtn && loginBtn.disabled) return;
-
-    const email = ($('#loginEmail')?.value || '').trim();
-    const pass  = ($('#loginPass')?.value  || '');
-
-    setLoginError('');
-
-    // Validações básicas de campo antes de chamar o Firebase
-    if (!email) {
-      setLoginError('Informe o e-mail.');
-      return;
-    }
-    if (!pass) {
-      setLoginError('Informe a senha.');
-      return;
-    }
-
-    // Sem Firebase configurado
-    if (!auth) {
-      setLoginError('Firebase Auth não configurado. Configure o Firebase para usar o painel online.');
-      return;
-    }
-
-    setLoginLoading(true);
-
-    try {
-      await auth.signInWithEmailAndPassword(email, pass);
-      // onAuthStateChanged cuida de abrir o painel após login bem-sucedido
-    } catch (err) {
-      setLoginLoading(false);
-      // Limpa senha após erro — nunca armazena
-      if ($('#loginPass')) $('#loginPass').value = '';
-
-      // Mensagens de erro amigáveis mapeadas dos códigos Firebase
-      const errorMessages = {
-        'auth/user-not-found':         'E-mail não encontrado.',
-        'auth/wrong-password':          'Senha incorreta.',
-        'auth/invalid-email':           'E-mail inválido.',
-        'auth/too-many-requests':       'Muitas tentativas. Aguarde alguns minutos.',
-        'auth/network-request-failed':  'Sem conexão com a internet.',
-        'auth/user-disabled':           'Usuário desativado.',
-        'auth/invalid-credential':      'E-mail ou senha incorretos.'
-      };
-
-      const msg = errorMessages[err.code] || ('Erro ao entrar: ' + (err.message || err.code));
-      setLoginError(msg);
+    if (user === ADMIN_CREDENTIALS.user && pass === ADMIN_CREDENTIALS.pass) {
+      setSession();
+      loginScreen.style.display = 'none';
+      adminPanel.style.display  = 'grid';
+      initAdmin();
+    } else {
+      loginError.textContent = 'Usuário ou senha incorretos.';
+      $('#loginPass').value = '';
     }
   });
 }
 
-// ---- Botão Sair (logout real via Firebase) -------------------
 const logoutBtn = $('#logoutBtn');
 if (logoutBtn) {
-  logoutBtn.addEventListener('click', async () => {
-    if (!confirm('Deseja sair do painel admin?')) return;
-    try {
-      if (auth) await auth.signOut();
-    } catch (e) {
-      console.warn('[Admin] Erro ao fazer logout:', e.message || e);
+  logoutBtn.addEventListener('click', () => {
+    if (confirm('Deseja sair do painel admin?')) {
+      clearSession();
+      location.reload();
     }
-    adminInitialized = false;
-    location.reload();
   });
 }
 
-// ---- Inicia observação de autenticação ao carregar a página ---
-initAuthAndListen();
+// Verifica sessão ao carregar
+if (checkSession()) {
+  loginScreen.style.display = 'none';
+  adminPanel.style.display  = 'grid';
+  initAdmin();
+}
 
 // ============================================================
 // INICIALIZAÇÃO DO PAINEL
 // ============================================================
 async function initAdmin() {
-  // Firebase já foi inicializado por initAuthAndListen()
+  initFirebase();
   await loadAllData();
   setupTabs();
   setupSidebarToggle();
@@ -411,6 +307,7 @@ async function initAdmin() {
   setupSaveHandlers();
   setupThemeHandlers();
   setupImageHandlers();
+  setupFaqHandlers();
   setupBackupHandlers();
   setupContentSectionTabs();
   setupAddCardHandlers();
@@ -534,6 +431,7 @@ function populateConteudo() {
   val('#jung-p2',      jg.p2      || '');
   val('#jung-p3',      jg.p3      || '');
   val('#jung-pillars', (jg.pillars || []).join(', '));
+  renderCardsList('jung-services-list', jg.services || [], 'jung-services', ['title','text','cta']);
 
   // Espaço
   const esp = ct.espaco || {};
@@ -860,6 +758,7 @@ function setupAddCardHandlers() {
       const fieldsBySection = {
         'sobre':        ['title','text'],
         'atend':        ['title','text'],
+        'jung-services':['title','text','cta'],
         'espaco-values':['title','text'],
         'proc-steps':   ['num','title','text'],
         'hor-schedule': ['label','value'],
@@ -985,8 +884,10 @@ function setupSaveHandlers() {
         p1:      $('#jung-p1')?.value    || '',
         p2:      $('#jung-p2')?.value    || '',
         p3:      $('#jung-p3')?.value    || '',
-        pillars: ($('#jung-pillars')?.value || '').split(',').map(s => s.trim()).filter(Boolean)
+        pillars: ($('#jung-pillars')?.value || '').split(',').map(s => s.trim()).filter(Boolean),
+        services: readCardsList('jung-services-list', ['title','text','cta'])
       };
+      content.layoutVersion = 'espaco-erika-v2-2026-05-30';
 
       content.espaco = {
         label:  $('#espaco-label')?.value || '',

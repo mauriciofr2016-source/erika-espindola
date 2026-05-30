@@ -1,10 +1,10 @@
 /* ============================================================
    ERIKA ESPINDOLA - sw.js
    Service Worker / PWA Cache
-   v5 — Firebase Auth no admin, sem credenciais hardcoded
+   v5 — layout Espaço Erika atualizado e cache renovado
    ============================================================ */
 
-const CACHE_NAME = 'erika-site-v5';
+const CACHE_NAME = 'erika-espindola-v5';
 
 const STATIC_ASSETS = [
   './',
