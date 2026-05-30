@@ -14,22 +14,24 @@
 
 :root {
   /* Nova paleta baseada na referência enviada */
-  --cream:        #FAF6F2;
-  --cream-dark:   #F5ECE7;
-  --sand:         #EFE3DB;
-  --sand-mid:     #E4D4CA;
+  --cream:        #FDF0EC;
+  --cream-dark:   #FAE4DC;
+  --sand:         #F5D5CB;
+  --sand-mid:     #EFC9BC;
   --mocha:        #B76E79;
   --mocha-dark:   #9F5C66;
   --mocha-light:  #C98A94;
   --brown-soft:   #D8B7AE;
-  --nude:         #F2E7E1;
+  --nude:         #FBE8E3;
   --warm-gray:    #8A817C;
   --warm-gray-lt: #D8D0CB;
-  --text-dark:    #4B4541;
-  --text-mid:     #6E6E6E;
+  --text-dark:    #3A2E2A;
+  --text-mid:     #5C4F49;
   --text-light:   #9C928C;
   --white:        #ffffff;
-  --overlay:      rgba(183,110,121,.04);
+  --overlay:      rgba(183,110,121,.06);
+  --salmon-bg:    #FDE8E1;
+  --white-ice:    #FAF9F8;
 
   /* Tipografia */
   --font-display: 'Cormorant Garamond', Georgia, serif;
@@ -65,7 +67,7 @@ html {
 
 body {
   font-family: var(--font-body);
-  background: var(--cream);
+  background: var(--salmon-bg);
   color: var(--text-dark);
   line-height: 1.7;
   overflow-x: hidden;
@@ -214,7 +216,7 @@ button {
 }
 
 .header.scrolled {
-  background: rgba(247,243,238,.94);
+  background: rgba(250,249,248,.97);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   box-shadow: 0 1px 24px rgba(156,123,90,.10);
@@ -304,7 +306,7 @@ button {
   display: none;
   flex-direction: column;
   padding: 20px var(--gutter) 32px;
-  background: rgba(247,243,238,.97);
+  background: rgba(250,249,248,.98);
   backdrop-filter: blur(20px);
   border-top: 1px solid var(--sand);
 }
@@ -1206,6 +1208,28 @@ button {
   background: var(--text-dark);
   color: rgba(247,243,238,.75);
   padding-block: 64px 36px;
+  position: relative;
+  overflow: hidden;
+}
+
+.footer::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    url('assets/img/espaco-consultorio.jpg') left center / 33.3% auto,
+    url('assets/img/espaco-jardim.jpg') center center / 33.3% auto,
+    url('assets/img/espaco-sala.jpg') right center / 33.3% auto;
+  background-repeat: no-repeat;
+  opacity: 0.09;
+  filter: grayscale(40%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.footer > * {
+  position: relative;
+  z-index: 1;
 }
 
 .footer__top {
@@ -1516,7 +1540,7 @@ button {
 
 /* Ajustes Espaço Erika v2 */
 .cms-two-col { align-items: center; }
-.cms-image-card img { width: 100%; height: 100%; min-height: 420px; object-fit: cover; border-radius: var(--radius-xl); display: block; }
+.cms-image-card img { width: 100%; height: 100%; min-height: 320px; object-fit: cover; border-radius: var(--radius-xl); display: block; }
 .cms-services-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; margin-top: 52px; }
 .cms-services-grid .service-card:last-child { grid-column: 1 / -1; }
 .service-card p + p { margin-top: 16px; color: var(--text-mid); }
@@ -1655,7 +1679,7 @@ button {
 .contato__link:hover { background: var(--mocha-dark); }
 
 .contato__form {
-  background: rgba(247, 243, 238, .96);
+  background: rgba(250, 249, 248, .98);
   box-shadow: 0 24px 70px rgba(74, 53, 36, .10);
 }
 
@@ -1670,19 +1694,19 @@ button {
 
 /* Ajuste visual v4 — mais contraste, cards mais fortes e topo destacado */
 .header {
-  background: rgba(232, 211, 190, .96);
-  border-bottom: 1px solid rgba(122, 92, 62, .18);
-  box-shadow: 0 10px 34px rgba(74, 53, 36, .08);
+  background: rgba(250, 249, 248, .97);
+  border-bottom: 1px solid rgba(183, 110, 121, .12);
+  box-shadow: 0 2px 20px rgba(74, 53, 36, .07);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
 }
 .header.scrolled {
-  background: rgba(224, 199, 173, .97);
-  box-shadow: 0 10px 34px rgba(74, 53, 36, .12);
+  background: rgba(250, 249, 248, .99);
+  box-shadow: 0 4px 28px rgba(74, 53, 36, .10);
 }
-.logo-name { color: var(--mocha-dark); font-weight: 600; }
-.logo-sub { color: var(--mocha-dark); font-weight: 500; }
-.nav__link { color: #4b392c; font-size: .88rem; font-weight: 500; }
+.logo-name { color: var(--text-dark); font-weight: 600; }
+.logo-sub { color: var(--mocha); font-weight: 500; }
+.nav__link { color: var(--text-dark); font-size: .88rem; font-weight: 500; }
 .nav__link:hover { color: var(--white); background: var(--mocha); }
 .header__cta.btn--outline {
   background: var(--mocha);
@@ -1765,7 +1789,7 @@ button {
 }
 
 .section-title { font-size: clamp(2.25rem, 4.5vw, 3.75rem); }
-.section-sub { font-size: clamp(1.05rem, 1.4vw, 1.18rem); color: #4f4036; }
+.section-sub { font-size: clamp(1.05rem, 1.4vw, 1.18rem); color: #3a2e2a; }
 
 .footer__dev {
   margin-top: 10px;
@@ -1824,9 +1848,9 @@ button {
 .horario-card,
 .timeline__item,
 .contato__card {
-  background: linear-gradient(145deg, #f5ede3 0%, #eadccf 100%) !important;
-  border: 1px solid rgba(156, 123, 90, .26) !important;
-  box-shadow: 0 16px 38px rgba(74, 53, 36, .09) !important;
+  background: #ffffff !important;
+  border: 1px solid rgba(183, 110, 121, .15) !important;
+  box-shadow: 0 8px 28px rgba(74, 53, 36, .08) !important;
 }
 .atend-card,
 .trabalho__card.service-card,
@@ -1848,7 +1872,7 @@ button {
 .horario-card h3,
 .timeline__item h3,
 .contato__card h3 {
-  color: var(--mocha-dark) !important;
+  color: #1a1a1a !important;
   font-size: clamp(1.12rem, 1.45vw, 1.34rem) !important;
   line-height: 1.28 !important;
 }
@@ -1858,7 +1882,7 @@ button {
 .horario-card p,
 .timeline__item p,
 .contato__card p {
-  color: #4d3e35 !important;
+  color: #3a3a3a !important;
   font-size: clamp(1rem, 1.08vw, 1.08rem) !important;
   line-height: 1.68 !important;
 }
@@ -1867,7 +1891,7 @@ button {
 .atend-card strong,
 .timeline__item strong,
 .contato__card strong {
-  color: var(--mocha-dark) !important;
+  color: #1a1a1a !important;
 }
 .processo .timeline { gap: 12px !important; margin-top: 32px !important; }
 .processo .timeline__item {

@@ -52,7 +52,7 @@ img { display: block; max-width: 100%; }
 .login-card {
   background: var(--adm-surface);
   border-radius: 16px;
-  padding: 40px;
+  padding: 28px;
   width: 100%;
   max-width: 400px;
   box-shadow: 0 20px 60px rgba(0,0,0,.3);
