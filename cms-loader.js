@@ -1,25 +1,17 @@
 /* ============================================================
    ERIKA ESPÍNDOLA — cms-loader.js
-   Carrega o conteúdo do CMS (LocalStorage / Firebase)
-   e aplica ao site público.
-   
-   - Fallback seguro: se nada estiver salvo, usa o HTML original
-   - Não quebra funcionalidades existentes (WhatsApp, FAQ, etc.)
-   - Chamado no fim do <body> do index.html
+   Carrega o conteúdo do CMS (Firebase / LocalStorage) e aplica
+   ao site público sem quebrar o painel administrativo.
    ============================================================ */
-
 'use strict';
 
-(async function() {
-
+(async function () {
   const STORAGE_KEY = 'erika_cms_data';
+  const REQUIRED_LAYOUT = 'espaco-erika-v2-2026-05-30';
 
-  function deepClone(obj) {
-    return JSON.parse(JSON.stringify(obj || {}));
-  }
-
+  const clone = (obj) => JSON.parse(JSON.stringify(obj || {}));
   function deepMerge(base, override) {
-    const result = deepClone(base);
+    const result = clone(base);
     if (!override || typeof override !== 'object') return result;
     for (const key in override) {
       if (override[key] && typeof override[key] === 'object' && !Array.isArray(override[key])) {
@@ -30,18 +22,26 @@
     }
     return result;
   }
-
-  // ---- Carrega dados salvos --------------------------------
-  function loadLocalCmsData() {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      return raw ? JSON.parse(raw) : null;
-    } catch (e) {
-      return null;
-    }
+  function sanitizeHtml(value) {
+    const template = document.createElement('template');
+    template.innerHTML = String(value || '');
+    template.content.querySelectorAll('script, iframe:not([src*="youtube.com"]):not([src*="youtube-nocookie.com"]):not([src*="vimeo.com"]), object, embed, link, meta, style').forEach(el => el.remove());
+    template.content.querySelectorAll('*').forEach(el => {
+      [...el.attributes].forEach(attr => {
+        const name = attr.name.toLowerCase();
+        const val = attr.value.trim().toLowerCase();
+        if (name.startsWith('on') || val.startsWith('javascript:') || val.startsWith('data:text/html')) el.removeAttribute(attr.name);
+      });
+    });
+    return template.innerHTML;
   }
+  const esc = (str) => String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  const $ = (sel, ctx = document) => ctx.querySelector(sel);
+  const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
+  function setText(selector, value) { const el = $(selector); if (el && value !== undefined && value !== null) el.textContent = value; }
+  function setHTML(selector, value) { const el = $(selector); if (el && value !== undefined && value !== null) el.innerHTML = sanitizeHtml(value); }
 
-  async function loadFirestoreCmsData() {
+  async function loadFirestore() {
     if (!window.FIREBASE_CONFIG || typeof firebase === 'undefined') return null;
     try {
       if (!firebase.apps.length) firebase.initializeApp(window.FIREBASE_CONFIG);
@@ -53,8 +53,7 @@
         db.collection('site_assets').doc('main').get(),
         db.collection('site_meta').doc('main').get()
       ]);
-      const hasAny = cfgDoc.exists || themeDoc.exists || contentDoc.exists || assetsDoc.exists || metaDoc.exists;
-      if (!hasAny) return null;
+      if (!cfgDoc.exists && !themeDoc.exists && !contentDoc.exists && !assetsDoc.exists && !metaDoc.exists) return null;
       return {
         config: cfgDoc.exists ? cfgDoc.data() : {},
         theme: themeDoc.exists ? themeDoc.data() : {},
@@ -63,582 +62,198 @@
         _meta: metaDoc.exists ? metaDoc.data() : {}
       };
     } catch (error) {
-      console.warn('CMS Firestore indisponível. Tentando LocalStorage.', error);
+      console.warn('CMS Firestore indisponível. Usando fallback/localStorage.', error);
       return null;
     }
   }
 
+  function loadLocal() {
+    try { const raw = localStorage.getItem(STORAGE_KEY); return raw ? JSON.parse(raw) : null; } catch (_) { return null; }
+  }
+
   async function loadCmsData() {
-    const firebaseData = await loadFirestoreCmsData();
+    const defaults = window.CMS_DEFAULTS || {};
+    const firebaseData = await loadFirestore();
     if (firebaseData) {
-      const merged = deepMerge(window.CMS_DEFAULTS || {}, firebaseData);
-      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(merged)); } catch (e) {}
+      // Evita que conteúdo antigo salvo no Firestore traga o layout velho de volta.
+      if (firebaseData.content && firebaseData.content.layoutVersion !== REQUIRED_LAYOUT) {
+        firebaseData.content = clone(defaults.content || {});
+      }
+      const merged = deepMerge(defaults, firebaseData);
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(merged)); } catch (_) {}
       return merged;
     }
-    const localData = loadLocalCmsData();
-    return localData ? deepMerge(window.CMS_DEFAULTS || {}, localData) : null;
+    const localData = loadLocal();
+    if (localData) {
+      if (localData.content && localData.content.layoutVersion !== REQUIRED_LAYOUT) localData.content = clone(defaults.content || {});
+      return deepMerge(defaults, localData);
+    }
+    return defaults;
   }
 
   const data = await loadCmsData();
-  if (!data) return; // Sem dados salvos → conteúdo HTML original prevalece
+  if (!data) return;
+  const ct = data.content || {};
 
-  // ---- Utilitário para setar texto seguramente ------------
-  function setText(selector, value) {
-    if (!value) return;
-    const el = document.querySelector(selector);
-    if (el) el.textContent = value;
-  }
-
-  function setHTML(selector, value) {
-    if (!value) return;
-    const el = document.querySelector(selector);
-    if (el) el.innerHTML = sanitizeHtml(value);
-  }
-
-  function sanitizeHtml(value) {
-    const template = document.createElement('template');
-    template.innerHTML = String(value);
-    template.content.querySelectorAll('script, iframe:not([src*="youtube.com"]):not([src*="youtube-nocookie.com"]):not([src*="vimeo.com"]), object, embed, link, meta, style').forEach(el => el.remove());
-    template.content.querySelectorAll('*').forEach(el => {
-      [...el.attributes].forEach(attr => {
-        const name = attr.name.toLowerCase();
-        const val = attr.value.trim().toLowerCase();
-        if (name.startsWith('on') || val.startsWith('javascript:') || val.startsWith('data:text/html')) {
-          el.removeAttribute(attr.name);
-        }
-      });
+  // Config / SEO / WhatsApp / Footer
+  const c = data.config || {};
+  if (c.siteTitle) document.title = c.siteTitle;
+  if (c.siteDesc) { const m = $('meta[name="description"]'); if (m) m.content = c.siteDesc; const og = $('meta[property="og:description"]'); if (og) og.content = c.siteDesc; }
+  if (c.siteKeywords) { const k = $('meta[name="keywords"]'); if (k) k.content = c.siteKeywords; }
+  if (c.ogTitle || c.siteTitle) { const og = $('meta[property="og:title"]'); if (og) og.content = c.ogTitle || c.siteTitle; }
+  if (c.ogDesc) { const og = $('meta[property="og:description"]'); if (og) og.content = c.ogDesc; }
+  if (c.ogImage) { const og = $('meta[property="og:image"]'); if (og) og.content = c.ogImage; }
+  if (c.favicon) { const f = $('link[rel="icon"]'); if (f) f.href = c.favicon; }
+  setText('.footer__crp', c.footerCrp);
+  setText('.footer__tagline', c.footerTag);
+  setText('.footer__reach', c.footerReach);
+  setText('.footer__copy', c.copyright);
+  if (c.whatsapp) window.__CMS_WHATSAPP_NUMBER = c.whatsapp.replace(/\D/g, '');
+  if (c.whatsappMessages) {
+    $$('.js-whatsapp').forEach(el => {
+      const ctx = el.closest('header') ? 'header' : el.closest('.hero') ? 'hero' : el.classList.contains('wa-float') ? 'float' : el.closest('#contato') ? 'contato' : 'footer';
+      const msg = c.whatsappMessages[ctx] || c.whatsappMessages.hero || '';
+      if (msg) el.dataset.whatsappMessage = msg;
     });
-    return template.innerHTML;
   }
 
-  function escHtml(str) {
-    return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-  }
-
-  function setAttr(selector, attr, value) {
-    if (!value) return;
-    const el = document.querySelector(selector);
-    if (el) el.setAttribute(attr, value);
-  }
-
-  // ---- CONFIG: SEO & META ---------------------------------
-  if (data.config) {
-    const c = data.config;
-    if (c.siteTitle)  document.title = c.siteTitle;
-    if (c.siteDesc) {
-      const meta = document.querySelector('meta[name="description"]');
-      if (meta) meta.content = c.siteDesc;
-      const ogDesc = document.querySelector('meta[property="og:description"]');
-      if (ogDesc) ogDesc.content = c.siteDesc;
-    }
-    if (c.siteTitle) {
-      const ogTitle = document.querySelector('meta[property="og:title"]');
-      if (ogTitle) ogTitle.content = c.siteTitle;
-    }
-    if (c.siteKeywords) {
-      const keywords = document.querySelector('meta[name="keywords"]');
-      if (keywords) keywords.content = c.siteKeywords;
-    }
-    if (c.ogTitle) {
-      const ogTitle = document.querySelector('meta[property="og:title"]');
-      if (ogTitle) ogTitle.content = c.ogTitle;
-    }
-    if (c.ogDesc) {
-      const ogDesc = document.querySelector('meta[property="og:description"]');
-      if (ogDesc) ogDesc.content = c.ogDesc;
-    }
-    if (c.ogImage) {
-      const ogImage = document.querySelector('meta[property="og:image"]');
-      if (ogImage) ogImage.content = c.ogImage;
-    }
-    if (c.favicon) {
-      const favicon = document.querySelector('link[rel="icon"]');
-      if (favicon) favicon.href = c.favicon;
-    }
-
-    // WhatsApp number — atualiza a constante global se existir
-    if (c.whatsapp && typeof window !== 'undefined') {
-      window.__CMS_WHATSAPP_NUMBER = c.whatsapp.replace(/\D/g, '');
-    }
-
-    // Footer
-    if (c.footerCrp)   setText('.footer__crp',     c.footerCrp);
-    if (c.footerTag)   setText('.footer__tagline',  c.footerTag);
-    if (c.footerReach) setText('.footer__reach',    c.footerReach);
-    if (c.copyright)   setText('.footer__copy',     c.copyright);
-
-    // Localização no contato
-    if (c.endereco) {
-      const locP = document.querySelector('.contato__card:nth-child(2) p');
-      if (locP) locP.textContent = c.endereco;
-    }
-
-    // Mensagens WhatsApp
-    if (c.whatsappMessages) {
-      const msgs = c.whatsappMessages;
-      document.querySelectorAll('.js-whatsapp').forEach(el => {
-        const ctx = el.closest('header') ? 'header'
-                  : el.closest('.hero') ? 'hero'
-                  : el.closest('.horarios') ? 'horarios'
-                  : el.classList.contains('wa-float') ? 'float'
-                  : 'footer';
-        const msg = msgs[ctx] || msgs.header || '';
-        if (msg) el.dataset.whatsappMessage = msg;
-      });
-    }
-  }
-
-  // ---- THEME: CSS Variables --------------------------------
+  // Theme
   if (data.theme) {
-    const th = data.theme;
-    const root = document.documentElement;
-    const themeMap = {
-      cream:      '--cream',
-      creamDark:  '--cream-dark',
-      sand:       '--sand',
-      sandMid:    '--sand-mid',
-      mocha:      '--mocha',
-      mochaDark:  '--mocha-dark',
-      mochaLight: '--mocha-light',
-      brownSoft:  '--brown-soft',
-      nude:       '--nude',
-      warmGray:   '--warm-gray',
-      textDark:   '--text-dark',
-      textMid:    '--text-mid',
-      textLight:  '--text-light',
-      sectionV:   '--section-v',
-      radiusSm:   '--radius-sm',
-      radiusMd:   '--radius-md',
-      radiusXl:   '--radius-xl'
-    };
-
-    for (const [key, cssVar] of Object.entries(themeMap)) {
-      if (th[key]) root.style.setProperty(cssVar, th[key]);
-    }
+    const map = { cream:'--cream', creamDark:'--cream-dark', sand:'--sand', sandMid:'--sand-mid', mocha:'--mocha', mochaDark:'--mocha-dark', mochaLight:'--mocha-light', brownSoft:'--brown-soft', nude:'--nude', warmGray:'--warm-gray', textDark:'--text-dark', textMid:'--text-mid', textLight:'--text-light', sectionV:'--section-v', radiusSm:'--radius-sm', radiusMd:'--radius-md', radiusXl:'--radius-xl' };
+    Object.entries(map).forEach(([key, cssVar]) => { if (data.theme[key]) document.documentElement.style.setProperty(cssVar, data.theme[key]); });
   }
 
-  // ---- CONTEÚDO: Seções -----------------------------------
-  const ct = data.content;
-  if (!ct) return;
-
-  // ORDEM / VISIBILIDADE DAS SEÇÕES
-  if (ct.sections && Array.isArray(ct.sections)) {
-    const main = document.querySelector('main');
-    ct.sections.forEach((item) => {
-      const section = item && item.id ? document.getElementById(item.id) : null;
-      if (!section || !main) return;
-      section.hidden = item.visible === false;
-      main.appendChild(section);
-    });
+  // Ordem e visibilidade
+  if (Array.isArray(ct.sections)) {
+    const main = $('main');
+    ct.sections.forEach(item => { const section = item?.id ? document.getElementById(item.id) : null; if (section && main) { section.hidden = item.visible === false; main.appendChild(section); } });
   }
 
-  // HERO
+  // Hero
   if (ct.hero) {
-    const h = ct.hero;
-    if (h.tag)      setText('.hero__tag',   h.tag);
-    if (h.title)    setHTML('.hero__title',  h.title);
-    if (h.sub)      setHTML('.hero__sub',    h.sub);
-    if (h.btnPrimary) {
-      const primaryBtn = document.querySelector('.hero__actions .btn--primary .btn-text, .hero__actions .btn--primary');
-      if (primaryBtn) {
-        // Preserva o SVG icon se existir
-        const svg = primaryBtn.querySelector('svg');
-        if (svg && primaryBtn.childNodes.length > 1) {
-          // Remove text nodes only
-          [...primaryBtn.childNodes].forEach(n => { if (n.nodeType === 3) n.textContent = ''; });
-          primaryBtn.appendChild(document.createTextNode(' ' + h.btnPrimary));
-        } else if (!svg) {
-          primaryBtn.textContent = h.btnPrimary;
-        }
-      }
-    }
-    if (h.btnGhost) setText('.hero__actions .btn--ghost', h.btnGhost);
+    setText('.hero__tag', ct.hero.tag);
+    setHTML('.hero__title', ct.hero.title);
+    setHTML('.hero__sub', ct.hero.sub);
+    setText('.hero__actions .btn--primary', ct.hero.btnPrimary);
+    setText('.hero__actions .btn--ghost', ct.hero.btnGhost);
   }
 
-  // SOBRE
+  // Nosso espaço
   if (ct.sobre) {
-    const s = ct.sobre;
-    if (s.label) setText('#sobre .section-label',         s.label);
-    if (s.title) setHTML('#sobre-heading',                 s.title);
-    if (s.p1)    setHTML('.trabalho__text p:nth-child(1)', s.p1);
-    if (s.p2)    setHTML('.trabalho__text p:nth-child(2)', s.p2);
-    if (s.p3)    setHTML('.trabalho__text p:nth-child(3)', s.p3);
-
-    if (s.cards && s.cards.length) {
-      const cardEls = document.querySelectorAll('.trabalho__card');
-      s.cards.forEach((card, i) => {
-        if (cardEls[i]) {
-          const h3 = cardEls[i].querySelector('h3');
-          const p  = cardEls[i].querySelector('p');
-          if (h3 && card.title) h3.textContent = card.title;
-          if (p  && card.text)  p.textContent  = card.text;
-        }
-      });
-    }
+    setText('#sobre .section-label', ct.sobre.label);
+    setHTML('#sobre-heading', ct.sobre.title);
+    const ps = $$('.trabalho__text p', $('#sobre'));
+    if (ps[0]) ps[0].innerHTML = sanitizeHtml(ct.sobre.p1 || '');
+    if (ps[1]) ps[1].innerHTML = sanitizeHtml(ct.sobre.p2 || '');
+    if (ps[2]) ps[2].innerHTML = sanitizeHtml(ct.sobre.p3 || '');
   }
 
-  // ATENDIMENTOS
+  // Para quem
   if (ct.atendimentos) {
-    const a = ct.atendimentos;
-    if (a.label) setText('#atendimentos .section-label', a.label);
-    if (a.title) setHTML('#atend-heading',               a.title);
-
-    if (a.cards && a.cards.length) {
-      const cardEls = document.querySelectorAll('.atend-card');
-      a.cards.forEach((card, i) => {
-        if (cardEls[i]) {
-          const h3 = cardEls[i].querySelector('h3');
-          const p  = cardEls[i].querySelector('p');
-          if (h3 && card.title) h3.textContent = card.title;
-          if (p  && card.text)  p.textContent  = card.text;
-        }
-      });
-    }
+    setText('#atendimentos .section-label', ct.atendimentos.label);
+    setHTML('#atend-heading', ct.atendimentos.title);
+    renderSimpleCards('#atendimentos .atendimentos__grid', 'atend-card reveal', ct.atendimentos.cards || []);
   }
 
-  // JUNGUIANA
+  // Serviços
   if (ct.junguiana) {
-    const j = ct.junguiana;
-    if (j.label) setText('#junguiana .section-label', j.label);
-    if (j.title) setHTML('#jung-heading',              j.title);
-    const jungParas = document.querySelectorAll('.junguiana__text > p');
-    if (j.p1 && jungParas[0]) jungParas[0].innerHTML = j.p1;
-    if (j.p2 && jungParas[1]) jungParas[1].innerHTML = j.p2;
-    if (j.p3 && jungParas[2]) jungParas[2].innerHTML = j.p3;
-
-    if (j.pillars && j.pillars.length) {
-      const pillars = document.querySelectorAll('.jung-pillar span');
-      j.pillars.forEach((text, i) => {
-        if (pillars[i]) pillars[i].textContent = text;
-      });
+    setText('#junguiana .section-label', ct.junguiana.label);
+    setHTML('#jung-heading', ct.junguiana.title);
+    const services = ct.junguiana.services || [];
+    const grid = $('#junguiana .cms-services-grid');
+    if (grid && services.length) {
+      grid.innerHTML = services.map(s => `<div class="trabalho__card service-card reveal"><h3>${esc(s.title)}</h3><p>${sanitizeHtml(s.text || '')}</p>${s.cta ? `<p><strong>${s.cta.includes(':') ? esc(s.cta.split(':')[0]) + ':' : ''}</strong>${s.cta.includes(':') ? ' ' + esc(s.cta.split(':').slice(1).join(':').trim()) : esc(s.cta)}</p>` : ''}</div>`).join('');
     }
   }
 
-  // ESPAÇO
-  if (ct.espaco) {
-    const e = ct.espaco;
-    if (e.label) setText('#espaco .section-label', e.label);
-    if (e.title) setHTML('#espaco-heading',         e.title);
-    if (e.sub)   setText('#espaco .section-sub',    e.sub);
-
-    if (e.values && e.values.length) {
-      const valueEls = document.querySelectorAll('.espaco__value');
-      e.values.forEach((v, i) => {
-        if (valueEls[i]) {
-          const h3 = valueEls[i].querySelector('h3');
-          const p  = valueEls[i].querySelector('p');
-          if (h3 && v.title) h3.textContent = v.title;
-          if (p  && v.text)  p.textContent  = v.text;
-        }
-      });
-    }
-  }
-
-  // PROCESSO
+  // Como funciona
   if (ct.processo) {
-    const p = ct.processo;
-    if (p.label) setText('#processo .section-label', p.label);
-    if (p.title) setHTML('#proc-heading',             p.title);
-
-    if (p.steps && p.steps.length) {
-      const stepEls = document.querySelectorAll('.timeline__item');
-      p.steps.forEach((step, i) => {
-        if (stepEls[i]) {
-          const num  = stepEls[i].querySelector('.timeline__num');
-          const h3   = stepEls[i].querySelector('h3');
-          const para = stepEls[i].querySelector('p');
-          if (num  && step.num)   num.textContent  = step.num;
-          if (h3   && step.title) h3.textContent   = step.title;
-          if (para && step.text)  para.textContent  = step.text;
-        }
-      });
+    setText('#processo .section-label', ct.processo.label);
+    setHTML('#proc-heading', ct.processo.title);
+    const timeline = $('#processo .timeline');
+    if (timeline && Array.isArray(ct.processo.steps)) {
+      timeline.innerHTML = ct.processo.steps.map(step => `<div class="timeline__item reveal"><div class="timeline__num">${esc(step.num)}</div><h3>${esc(step.title)}</h3><p>${sanitizeHtml(step.text || '')}</p></div>`).join('');
     }
   }
 
-  // HORÁRIOS
+  // Projetos e oficinas
   if (ct.horarios) {
-    const h = ct.horarios;
-    if (h.label) setText('#horarios .section-label', h.label);
-    if (h.title) setHTML('#hor-heading',              h.title);
-
-    if (h.schedule && h.schedule.length) {
-      const rows = document.querySelectorAll('.schedule-row');
-      h.schedule.forEach((row, i) => {
-        if (rows[i]) {
-          const lbl = rows[i].querySelector('.schedule-label');
-          const val = rows[i].querySelector('.schedule-value');
-          if (lbl && row.label) lbl.textContent = row.label;
-          if (val && row.value) val.textContent = row.value;
-        }
-      });
-    }
-
-    if (h.cards && h.cards.length) {
-      const cardEls = document.querySelectorAll('.valor-card');
-      h.cards.forEach((card, i) => {
-        if (cardEls[i]) {
-          const h3 = cardEls[i].querySelector('h3');
-          const ps = cardEls[i].querySelectorAll('p');
-          if (h3 && card.title) h3.textContent = card.title;
-          if (ps[0] && card.text) ps[0].textContent = card.text;
-          if (ps[1] && card.cta)  ps[1].textContent = card.cta;
-        }
-      });
-    }
-
-    if (h.pagamento && h.pagamento.length) {
-      const pgEl = document.querySelector('.pagamento__methods');
-      if (pgEl) {
-        pgEl.innerHTML = h.pagamento.map(m => `<span>${escHtml(m)}</span>`).join('');
-      }
-    }
-
-    if (h.btnText) {
-      const horBtn = document.querySelector('#horarios .btn--primary .btn-text, #horarios .btn--primary');
-      if (horBtn) {
-        const svg = horBtn.querySelector ? horBtn.querySelector('svg') : null;
-        if (!svg) setText('#horarios .btn--primary', h.btnText);
-      }
+    setText('#horarios .section-label', ct.horarios.label);
+    setHTML('#hor-heading', ct.horarios.title);
+    const grid = $('#horarios .horarios__cards');
+    if (grid && Array.isArray(ct.horarios.cards)) {
+      grid.innerHTML = ct.horarios.cards.map(card => `<div class="horario-card reveal"><h3>${esc(card.title)}</h3><p>${sanitizeHtml(card.text || '')}</p>${card.cta ? `<p>${sanitizeHtml(card.cta)}</p>` : ''}</div>`).join('');
     }
   }
 
-  // EXPERIÊNCIA
+  // Diferenciais
   if (ct.experiencia) {
-    const ex = ct.experiencia;
-    if (ex.label) setText('#experiencia .section-label', ex.label);
-    if (ex.title) setHTML('#exp-heading',                ex.title);
-    const expParas = document.querySelectorAll('.experiencia__text > p');
-    if (ex.p1 && expParas[0]) expParas[0].innerHTML = ex.p1;
-    if (ex.p2 && expParas[1]) expParas[1].innerHTML = ex.p2;
-    if (ex.p3 && expParas[2]) expParas[2].innerHTML = ex.p3;
-    if (ex.btnText) setText('.experiencia__text .btn--outline', ex.btnText);
+    setText('#experiencia .section-label', ct.experiencia.label);
+    setHTML('#exp-heading', ct.experiencia.title);
+    const list = $('.cms-diferenciais');
+    if (list) {
+      const raw = [ct.experiencia.p1, ct.experiencia.p2, ct.experiencia.p3].filter(Boolean).join(';');
+      const items = raw.split(';').map(x => x.trim()).filter(Boolean);
+      if (items.length) list.innerHTML = items.map(item => `<li>${esc(item.replace(/\.$/, ''))}.</li>`).join('');
+    }
+    const btn = $('#experiencia .btn'); if (btn && ct.experiencia.btnText) btn.textContent = ct.experiencia.btnText;
   }
 
-  // CONTATO
+  // Chamada final / contato
   if (ct.contato) {
-    const c = ct.contato;
-    if (c.label)     setText('#contato .section-label',  c.label);
-    if (c.title)     setHTML('#contato-heading',          c.title);
-    if (c.sub)       setText('#contato .section-sub',    c.sub);
-    if (c.formTitle) setText('.contato__form h3',         c.formTitle);
-    if (c.formSub)   setText('.form-sub',                 c.formSub);
-  }
-
-  // FAQ
-  const faq = ct.faq;
-  if (faq) {
-    if (faq.label) setText('#faq .section-label', faq.label);
-    if (faq.title) setHTML('#faq-heading',         faq.title);
-
-    if (faq.items && faq.items.length) {
-      const faqList = document.querySelector('.faq__list');
-      if (faqList) {
-        const existingItems = faqList.querySelectorAll('.faq__item');
-        faq.items.forEach((item, i) => {
-          if (existingItems[i]) {
-            const btn = existingItems[i].querySelector('.faq__question');
-            const ans = existingItems[i].querySelector('.faq__answer p');
-            if (btn && item.q) {
-              // Preserva o span .faq__icon
-              const icon = btn.querySelector('.faq__icon');
-              btn.childNodes.forEach(n => { if (n.nodeType === 3) n.textContent = ''; });
-              btn.insertBefore(document.createTextNode(item.q + ' '), icon || btn.firstChild);
-            }
-            if (ans && item.a) ans.textContent = item.a;
-          }
-        });
-      }
+    const contatoLabel = String(ct.contato.label || '').trim();
+    const contatoLabelEl = $('#contato .section-label');
+    if (contatoLabelEl) {
+      if (!contatoLabel || contatoLabel.toLowerCase() === 'chamada final') contatoLabelEl.remove();
+      else contatoLabelEl.textContent = contatoLabel;
     }
+    setHTML('#contato-heading', ct.contato.title);
+    setText('#contato .section-sub', ct.contato.sub);
+    setText('.contato__form h3', ct.contato.formTitle);
+    setText('.form-sub', ct.contato.formSub);
   }
 
-  // MENU
+  // Menu
   if (ct.menu) {
-    const m = ct.menu;
-    if (m.ctaText) {
-      document.querySelectorAll('.header__cta, .mobile-cta').forEach(el => {
-        // Preserva SVG
-        const svg = el.querySelector('svg');
-        if (!svg) el.textContent = m.ctaText;
-      });
-    }
-
-    if (m.links && m.links.length) {
-      const navList = document.querySelector('.nav__list');
-      const mobileList = document.querySelector('.mobile-menu ul');
-      const linksHtml = m.links
-        .filter(link => link.visible !== false)
-        .map(link => `<li><a href="${escHtml(link.href)}" class="nav__link">${escHtml(link.label)}</a></li>`)
-        .join('');
-      const mobileLinksHtml = m.links
-        .filter(link => link.visible !== false)
-        .map(link => `<li><a href="${escHtml(link.href)}" class="mobile-link">${escHtml(link.label)}</a></li>`)
-        .join('');
-      if (navList) navList.innerHTML = linksHtml;
-      if (mobileList) {
-        const ctaHtml = m.ctaText ? `<li><a href="#contato" class="btn btn--primary mobile-cta js-whatsapp" data-whatsapp-message="Olá, gostaria de agendar uma conversa." target="_blank" rel="noopener noreferrer">${escHtml(m.ctaText)}</a></li>` : '';
-        mobileList.innerHTML = mobileLinksHtml + ctaHtml;
-        if (typeof closeMenu === 'function') {
-          mobileList.querySelectorAll('.mobile-link').forEach(link => {
-            link.addEventListener('click', closeMenu);
-          });
-        }
-      }
+    if (ct.menu.ctaText) $$('.header__cta, .mobile-cta').forEach(el => el.textContent = ct.menu.ctaText);
+    if (Array.isArray(ct.menu.links)) {
+      const links = ct.menu.links.filter(l => l.visible !== false);
+      const nav = $('.nav__list');
+      if (nav) nav.innerHTML = links.map(l => `<li><a href="${esc(l.href)}" class="nav__link">${esc(l.label)}</a></li>`).join('');
+      const mobile = $('.mobile-menu ul');
+      if (mobile) mobile.innerHTML = links.map(l => `<li><a href="${esc(l.href)}" class="mobile-link">${esc(l.label)}</a></li>`).join('') + `<li><a href="#contato" class="btn btn--primary mobile-cta js-whatsapp" data-whatsapp-message="${esc(c.whatsappMessages?.hero || '')}" target="_blank" rel="noopener noreferrer">${esc(ct.menu.ctaText || 'Falar pelo WhatsApp')}</a></li>`;
     }
   }
 
-  // ASSETS: imagens customizadas
-  if (data.assets) {
-    const assetMap = {
-      'erika-hero':          '.hero__img',
-      'erika-experiencia':   '.experiencia__image img',
-      'espaco-consultorio':  '.espaco__main img',
-      'espaco-jardim':       '.espaco__side-img:nth-child(1) img',
-      'espaco-sala':         '.espaco__side-img:nth-child(2) img',
-      'decorativo-agua':     '.junguiana__image img'
-    };
+  // Imagens
+  const assetMap = { 'erika-hero': '.hero__img', 'erika-experiencia': '.experiencia__image img', 'espaco-consultorio': '#sobre .espaco__main img', 'espaco-jardim': '#sobre .espaco__side-img:nth-child(1) img', 'espaco-sala': '#sobre .espaco__side-img:nth-child(2) img', 'decorativo-agua': null };
+  Object.entries(assetMap).forEach(([key, selector]) => {
+    if (!selector) return;
+    const img = $(selector); const asset = data.assets?.[key];
+    if (!img || !asset) return;
+    if (asset.src) img.src = asset.src;
+    if (asset.alt) img.alt = asset.alt;
+    if (asset.width) img.style.width = asset.width;
+    if (asset.height) img.style.height = asset.height;
+    if (asset.fit) img.style.objectFit = asset.fit;
+    if (asset.position) img.style.objectPosition = asset.position;
+    if (asset.radius) img.style.borderRadius = asset.radius;
+  });
 
-    for (const [key, selector] of Object.entries(assetMap)) {
-      const asset = data.assets[key];
-      if (!asset) continue;
-      const imgEl = document.querySelector(selector);
-      if (!imgEl) continue;
-      if (asset.src) imgEl.src = asset.src;
-      if (asset.alt) imgEl.alt = asset.alt;
-      if (asset.width) imgEl.style.width = asset.width;
-      if (asset.height) imgEl.style.height = asset.height;
-      if (asset.fit) imgEl.style.objectFit = asset.fit;
-      if (asset.position) imgEl.style.objectPosition = asset.position;
-      if (asset.radius) imgEl.style.borderRadius = asset.radius;
-    }
+  hydrateWhatsApp();
+
+  function renderSimpleCards(containerSel, className, cards) {
+    const container = $(containerSel); if (!container || !cards.length) return;
+    container.innerHTML = cards.map(card => `<div class="${className}"><h3>${esc(card.title)}</h3><p>${sanitizeHtml(card.text || '')}</p></div>`).join('');
   }
 
-  // BLOCOS DINÂMICOS
-  if (ct.blocks && Array.isArray(ct.blocks) && ct.blocks.length) {
-    const host = document.createElement('section');
-    host.className = 'cms-blocks section';
-    host.setAttribute('aria-label', 'Conteúdo adicional');
-    host.innerHTML = '<div class="container cms-blocks__inner"></div>';
-    const inner = host.querySelector('.cms-blocks__inner');
-    ct.blocks.filter(block => block && block.visible !== false).forEach(block => {
-      const el = renderBlock(block);
-      if (el) inner.appendChild(el);
-    });
-    if (inner.children.length) {
-      const contato = document.getElementById('contato');
-      if (contato && contato.parentNode) contato.parentNode.insertBefore(host, contato);
-      else document.querySelector('main')?.appendChild(host);
-    }
-  }
-
-  // Reconfigura WhatsApp links com número do CMS (se houver)
-  if (window.__CMS_WHATSAPP_NUMBER && typeof buildWhatsAppUrl === 'function') {
-    // Sobrescreve a constante global no script.js — a função será re-executada
-    // na próxima vez que hydrateWhatsAppLinks() for chamada no script.js
-    // Como o cms-loader roda depois do script.js, precisamos re-hidratar
-    const num = window.__CMS_WHATSAPP_NUMBER;
-    document.querySelectorAll('.js-whatsapp').forEach(link => {
-      const msg = link.dataset.whatsappMessage || '';
-      const url = new URL(`https://wa.me/${num}`);
+  function hydrateWhatsApp() {
+    if (!window.__CMS_WHATSAPP_NUMBER) return;
+    $$('.js-whatsapp').forEach(link => {
+      const msg = link.dataset.whatsappMessage || c.whatsappMessages?.hero || '';
+      const url = new URL(`https://wa.me/${window.__CMS_WHATSAPP_NUMBER}`);
       if (msg.trim()) url.searchParams.set('text', msg.trim());
       link.href = url.toString();
     });
   }
-
-  setupMobileCmsUpdateNotice(data._meta?.updatedAt || 0);
-
-  function renderBlock(block) {
-    const wrap = document.createElement('div');
-    wrap.className = 'cms-block cms-block--' + (block.type || 'texto');
-    const cfg = block.config || {};
-    const style = cfg.style || {};
-    Object.entries(style).forEach(([key, value]) => {
-      if (!value) return;
-      const cssKey = key.replace(/[A-Z]/g, m => '-' + m.toLowerCase());
-      wrap.style.setProperty(cssKey, value);
-    });
-
-    const title = cfg.title ? `<h2>${sanitizeHtml(cfg.title)}</h2>` : '';
-    const text = cfg.text ? `<p>${sanitizeHtml(cfg.text)}</p>` : '';
-    const button = cfg.buttonText ? `<a class="btn btn--primary js-whatsapp" href="${escHtml(cfg.href || '#contato')}">${escHtml(cfg.buttonText)}</a>` : '';
-    const image = cfg.src ? `<img src="${escHtml(cfg.src)}" alt="${escHtml(cfg.alt || '')}" loading="lazy" />` : '';
-
-    switch (block.type) {
-      case 'imagem':
-        wrap.innerHTML = image;
-        break;
-      case 'banner':
-      case 'cta':
-      case 'whatsapp':
-        wrap.innerHTML = `${title}${text}${button}`;
-        break;
-      case 'faq':
-        wrap.innerHTML = `${title}<div>${(cfg.items || []).map(item => `<details><summary>${escHtml(item.q || '')}</summary><p>${sanitizeHtml(item.a || '')}</p></details>`).join('')}</div>`;
-        break;
-      case 'galeria':
-        wrap.innerHTML = `<div class="cms-gallery">${(cfg.images || []).map(img => `<img src="${escHtml(img.src)}" alt="${escHtml(img.alt || '')}" loading="lazy" />`).join('')}</div>`;
-        break;
-      case 'video':
-      case 'vídeo embed':
-        wrap.innerHTML = cfg.embed ? `<div class="cms-video">${sanitizeHtml(cfg.embed)}</div>` : `${title}${text}`;
-        break;
-      case 'separador':
-        wrap.innerHTML = '<hr />';
-        break;
-      default:
-        wrap.innerHTML = `${image}${title}${text}${button}`;
-    }
-    return wrap;
-  }
-
-  function setupMobileCmsUpdateNotice(currentVersion) {
-    const isMobileLike = window.matchMedia('(max-width: 900px), (pointer: coarse)').matches;
-    if (!isMobileLike || !window.FIREBASE_CONFIG || typeof firebase === 'undefined') return;
-    if (window.__CMS_UPDATE_WATCHER_READY) return;
-    window.__CMS_UPDATE_WATCHER_READY = true;
-
-    const seenKey = 'erika_cms_seen_update';
-    if (currentVersion) {
-      try { localStorage.setItem(seenKey, String(currentVersion)); } catch (error) {}
-    }
-
-    try {
-      if (!firebase.apps.length) firebase.initializeApp(window.FIREBASE_CONFIG);
-      const db = firebase.firestore();
-      let firstSnapshot = true;
-      db.collection('site_meta').doc('main').onSnapshot((doc) => {
-        if (!doc.exists) return;
-        const updatedAt = Number(doc.data().updatedAt || 0);
-        if (!updatedAt) return;
-        if (firstSnapshot) {
-          firstSnapshot = false;
-          return;
-        }
-        const seen = Number(localStorage.getItem(seenKey) || currentVersion || 0);
-        if (updatedAt > seen) showUpdateBanner(updatedAt, seenKey);
-      });
-    } catch (error) {
-      // Atualização em tempo real é opcional; o fallback segue sendo recarregar a página.
-    }
-  }
-
-  function showUpdateBanner(version, seenKey) {
-    if (document.querySelector('.cms-update-banner')) return;
-    const banner = document.createElement('div');
-    banner.className = 'cms-update-banner';
-    banner.setAttribute('role', 'status');
-    banner.innerHTML = `
-      <span>Nova atualização disponível</span>
-      <button type="button">Atualizar</button>
-    `;
-    banner.querySelector('button').addEventListener('click', async () => {
-      try { localStorage.setItem(seenKey, String(version)); } catch (error) {}
-      if ('serviceWorker' in navigator) {
-        const reg = await navigator.serviceWorker.getRegistration();
-        if (reg) await reg.update();
-      }
-      window.location.reload();
-    });
-    document.body.appendChild(banner);
-  }
-
 })();

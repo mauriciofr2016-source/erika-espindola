@@ -34,23 +34,11 @@ Os caminhos usados no projeto seguem formato web com barra `/`, por exemplo `ass
 ## Acesso ao Painel Admin
 
 1. Acesse `/admin.html`
-2. Usuário: `erika`
-3. Senha: `223687`
+2. Entre com o e-mail cadastrado no Firebase Authentication.
+3. Usuário autorizado atual: `erika@gmail.com`
 
-> ⚠️ **AVISO DE SEGURANÇA**: Login hardcoded não é seguro para produção. Esse login é uma proteção básica de interface.
-> Qualquer pessoa que inspecionar o código-fonte pode ver as credenciais.
-> Para produção real, implemente Firebase Authentication conforme descrito abaixo.
-
-### Como trocar o usuário/senha
-
-Edite as primeiras linhas do arquivo `admin.js`:
-
-```js
-const ADMIN_CREDENTIALS = {
-  user: 'erika',   // ← altere aqui
-  pass: '223687'   // ← altere aqui
-};
-```
+> O painel usa Firebase Authentication real. Não há senha hardcoded no código.
+> Para trocar o usuário autorizado, altere `AUTHORIZED_EMAIL` em `admin.js` e ajuste as regras do Firestore/Storage com o mesmo e-mail.
 
 ---
 

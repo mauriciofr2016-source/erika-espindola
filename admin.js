@@ -1,22 +1,18 @@
 /* ============================================================
    ERIKA ESPÍNDOLA — admin.js
    Painel Administrativo
-   
-   AVISO: O login simples (usuário/senha hardcoded) é apenas
-   proteção básica de interface. Para produção real, configure
-   Firebase Authentication e remova as credenciais daqui.
+   Login via Firebase Authentication (email/senha).
+   Sem credenciais hardcoded. Sem senha no localStorage.
    ============================================================ */
 
 'use strict';
 
 // ============================================================
-// CREDENCIAIS DE ACESSO — APENAS PROTEÇÃO BÁSICA DE INTERFACE
-// Para produção real, use Firebase Authentication
+// EMAIL AUTORIZADO — único ponto de configuração
+// Altere aqui se o e-mail do admin mudar.
+// Não armazena senha. A autenticação é delegada ao Firebase.
 // ============================================================
-const ADMIN_CREDENTIALS = {
-  user: 'erika',
-  pass: '223687'
-};
+const AUTHORIZED_EMAIL = 'erika@gmail.com';
 
 // Chave de armazenamento local
 const STORAGE_KEY = 'erika_cms_data';
@@ -30,6 +26,7 @@ let cmsData = {};
 // Firebase referências (preenchidas se disponível)
 let db = null;
 let storage = null;
+let auth = null;
 let firebaseAvailable = false;
 
 // ============================================================
@@ -121,38 +118,53 @@ function loadFromLocal() {
 }
 
 // ============================================================
-// FIREBASE — INICIALIZAÇÃO OPCIONAL
+// FIREBASE — INICIALIZAÇÃO (Firestore + Storage + Auth)
 // ============================================================
 function initFirebase() {
   const statusEl = $('#firebaseStatus');
 
-  // Tenta carregar firebase-config.js (pode não existir)
-  if (!window.FIREBASE_CONFIG) {
-    if (statusEl) {
-      statusEl.className = 'firebase-status warning';
-      statusEl.querySelector('.firebase-status__text').textContent =
-        'Firebase não configurado. Usando armazenamento local (LocalStorage). Configure firebase-config.js para persistência multi-dispositivo.';
-    }
+  function setStatus(state, msg) {
+    if (!statusEl) return;
+    statusEl.className = 'firebase-status ' + state;
+    const txt = statusEl.querySelector('.firebase-status__text');
+    if (txt) txt.textContent = msg;
+  }
+
+  if (!window.FIREBASE_CONFIG || typeof window.FIREBASE_CONFIG !== 'object') {
+    setStatus('warning', 'Firebase não configurado. Configure firebase-config.js para usar o painel online.');
+    return;
+  }
+
+  if (typeof firebase === 'undefined') {
+    setStatus('warning', 'Firebase SDK não carregado. Verifique sua conexão e os scripts do admin.html.');
     return;
   }
 
   try {
-    if (typeof firebase !== 'undefined') {
-      if (!firebase.apps.length) firebase.initializeApp(window.FIREBASE_CONFIG);
-      db = firebase.firestore();
-      storage = firebase.storage();
-      firebaseAvailable = true;
-      if (statusEl) {
-        statusEl.className = 'firebase-status connected';
-        statusEl.querySelector('.firebase-status__text').textContent = 'Firebase conectado com sucesso.';
-      }
+    if (!firebase.apps || !firebase.apps.length) {
+      firebase.initializeApp(window.FIREBASE_CONFIG);
     }
+
+    db = firebase.firestore();
+    storage = firebase.storage();
+
+    if (typeof firebase.auth !== 'function') {
+      auth = null;
+      firebaseAvailable = false;
+      setStatus('error', 'Firebase Auth não disponível. Verifique se firebase-auth-compat.js está carregado.');
+      return;
+    }
+
+    auth = firebase.auth();
+    firebaseAvailable = true;
+    setStatus('connected', 'Firebase conectado. Autenticação ativa.');
   } catch (e) {
-    console.warn('Firebase init error:', e);
-    if (statusEl) {
-      statusEl.className = 'firebase-status error';
-      statusEl.querySelector('.firebase-status__text').textContent = 'Erro ao conectar ao Firebase. Usando armazenamento local.';
-    }
+    console.warn('[Admin] Firebase init error:', e.message || e);
+    db = null;
+    storage = null;
+    auth = null;
+    firebaseAvailable = false;
+    setStatus('error', 'Erro ao conectar ao Firebase. Verifique firebase-config.js.');
   }
 }
 
@@ -208,6 +220,7 @@ async function loadAllData() {
   // Override com dados locais
   const local = loadFromLocal();
   if (local) {
+    if (local.content && local.content.layoutVersion !== 'espaco-erika-v2-2026-05-30') local.content = DEFAULTS.content || {};
     cmsData = deepMerge(cmsData, local);
   }
 
@@ -223,7 +236,12 @@ async function loadAllData() {
 
       if (cfgDoc.exists)     cmsData.config  = deepMerge(cmsData.config,  cfgDoc.data());
       if (themeDoc.exists)   cmsData.theme   = deepMerge(cmsData.theme,   themeDoc.data());
-      if (contentDoc.exists) cmsData.content = deepMerge(cmsData.content, contentDoc.data());
+      if (contentDoc.exists) {
+        const incomingContent = contentDoc.data();
+        cmsData.content = incomingContent.layoutVersion === 'espaco-erika-v2-2026-05-30'
+          ? deepMerge(cmsData.content, incomingContent)
+          : deepMerge(cmsData.content, DEFAULTS.content || {});
+      }
       if (assetsDoc.exists)  cmsData.assets  = deepMerge(cmsData.assets || {}, assetsDoc.data());
     } catch (e) {
       console.warn('Erro ao carregar Firebase, usando dados locais:', e);
@@ -234,60 +252,143 @@ async function loadAllData() {
 }
 
 // ============================================================
-// LOGIN
+// LOGIN — Firebase Authentication (email/senha)
 // ============================================================
 const loginScreen = $('#loginScreen');
 const adminPanel  = $('#adminPanel');
 const loginForm   = $('#loginForm');
 const loginError  = $('#loginError');
+const loginBtn    = $('#loginBtn');
 
-function checkSession() {
-  return sessionStorage.getItem('erika_admin_auth') === '1';
+let adminInitialized = false;
+
+function setLoginError(msg) {
+  if (loginError) loginError.textContent = msg || '';
 }
 
-function setSession() {
-  sessionStorage.setItem('erika_admin_auth', '1');
+function setLoginLoading(loading) {
+  if (!loginBtn) return;
+  const span = loginBtn.querySelector('.btn-text');
+  loginBtn.disabled = loading;
+  if (span) span.textContent = loading ? 'Entrando...' : 'Entrar';
 }
 
-function clearSession() {
-  sessionStorage.removeItem('erika_admin_auth');
+function showPanel() {
+  if (adminInitialized) return;
+  adminInitialized = true;
+  if (loginScreen) loginScreen.style.display = 'none';
+  if (adminPanel)  adminPanel.style.display = 'grid';
+  initAdmin();
+}
+
+function showLoginWithError(msg) {
+  if (loginScreen) loginScreen.style.display = '';
+  if (adminPanel)  adminPanel.style.display = 'none';
+  setLoginLoading(false);
+  setLoginError(msg);
+  adminInitialized = false;
+  if (auth) auth.signOut().catch(() => {});
+}
+
+function initAuthAndListen() {
+  if (!window.FIREBASE_CONFIG || typeof firebase === 'undefined') {
+    setLoginError('Firebase Auth não configurado. Configure o Firebase para usar o painel online.');
+    setLoginLoading(false);
+    return;
+  }
+
+  initFirebase();
+
+  if (!auth) {
+    setLoginError('Firebase Auth não disponível. Verifique firebase-config.js e firebase-auth-compat.js.');
+    return;
+  }
+
+  auth.onAuthStateChanged((user) => {
+    if (!user) {
+      if (adminInitialized) {
+        adminInitialized = false;
+        if (loginScreen) loginScreen.style.display = '';
+        if (adminPanel)  adminPanel.style.display = 'none';
+      }
+      setLoginLoading(false);
+      return;
+    }
+
+    if (user.email !== AUTHORIZED_EMAIL) {
+      showLoginWithError('Usuário não autorizado.');
+      return;
+    }
+
+    showPanel();
+  });
 }
 
 if (loginForm) {
-  loginForm.addEventListener('submit', function(e) {
+  loginForm.addEventListener('submit', async function(e) {
     e.preventDefault();
-    const user = $('#loginUser').value.trim();
-    const pass = $('#loginPass').value;
-    loginError.textContent = '';
 
-    if (user === ADMIN_CREDENTIALS.user && pass === ADMIN_CREDENTIALS.pass) {
-      setSession();
-      loginScreen.style.display = 'none';
-      adminPanel.style.display  = 'grid';
-      initAdmin();
-    } else {
-      loginError.textContent = 'Usuário ou senha incorretos.';
-      $('#loginPass').value = '';
+    if (loginBtn && loginBtn.disabled) return;
+
+    const email = ($('#loginEmail')?.value || '').trim();
+    const pass  = ($('#loginPass')?.value || '');
+
+    setLoginError('');
+
+    if (!email) {
+      setLoginError('Informe o e-mail.');
+      return;
+    }
+
+    if (!pass) {
+      setLoginError('Informe a senha.');
+      return;
+    }
+
+    if (!auth) {
+      setLoginError('Firebase Auth não configurado. Configure o Firebase para usar o painel online.');
+      return;
+    }
+
+    setLoginLoading(true);
+
+    try {
+      await auth.signInWithEmailAndPassword(email, pass);
+    } catch (err) {
+      setLoginLoading(false);
+      const passInput = $('#loginPass');
+      if (passInput) passInput.value = '';
+
+      const errorMessages = {
+        'auth/user-not-found': 'E-mail não encontrado.',
+        'auth/wrong-password': 'Senha incorreta.',
+        'auth/invalid-email': 'E-mail inválido.',
+        'auth/too-many-requests': 'Muitas tentativas. Aguarde alguns minutos.',
+        'auth/network-request-failed': 'Sem conexão com a internet.',
+        'auth/user-disabled': 'Usuário desativado.',
+        'auth/invalid-credential': 'E-mail ou senha incorretos.'
+      };
+
+      setLoginError(errorMessages[err.code] || ('Erro ao entrar: ' + (err.message || err.code || 'verifique os dados.')));
     }
   });
 }
 
 const logoutBtn = $('#logoutBtn');
 if (logoutBtn) {
-  logoutBtn.addEventListener('click', () => {
-    if (confirm('Deseja sair do painel admin?')) {
-      clearSession();
-      location.reload();
+  logoutBtn.addEventListener('click', async () => {
+    if (!confirm('Deseja sair do painel admin?')) return;
+    try {
+      if (auth) await auth.signOut();
+    } catch (e) {
+      console.warn('[Admin] Erro ao fazer logout:', e.message || e);
     }
+    adminInitialized = false;
+    location.reload();
   });
 }
 
-// Verifica sessão ao carregar
-if (checkSession()) {
-  loginScreen.style.display = 'none';
-  adminPanel.style.display  = 'grid';
-  initAdmin();
-}
+initAuthAndListen();
 
 // ============================================================
 // INICIALIZAÇÃO DO PAINEL
@@ -425,6 +526,7 @@ function populateConteudo() {
   val('#jung-p2',      jg.p2      || '');
   val('#jung-p3',      jg.p3      || '');
   val('#jung-pillars', (jg.pillars || []).join(', '));
+  renderCardsList('jung-services-list', jg.services || [], 'jung-services', ['title','text','cta']);
 
   // Espaço
   const esp = ct.espaco || {};
@@ -751,6 +853,7 @@ function setupAddCardHandlers() {
       const fieldsBySection = {
         'sobre':        ['title','text'],
         'atend':        ['title','text'],
+        'jung-services':['title','text','cta'],
         'espaco-values':['title','text'],
         'proc-steps':   ['num','title','text'],
         'hor-schedule': ['label','value'],
@@ -876,8 +979,10 @@ function setupSaveHandlers() {
         p1:      $('#jung-p1')?.value    || '',
         p2:      $('#jung-p2')?.value    || '',
         p3:      $('#jung-p3')?.value    || '',
-        pillars: ($('#jung-pillars')?.value || '').split(',').map(s => s.trim()).filter(Boolean)
+        pillars: ($('#jung-pillars')?.value || '').split(',').map(s => s.trim()).filter(Boolean),
+        services: readCardsList('jung-services-list', ['title','text','cta'])
       };
+      content.layoutVersion = 'espaco-erika-v2-2026-05-30';
 
       content.espaco = {
         label:  $('#espaco-label')?.value || '',
