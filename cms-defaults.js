@@ -2,143 +2,206 @@
    cms-defaults.js
    Conteúdo padrão do site — usado como fallback quando o
    Firebase não está configurado ou falha ao carregar.
+   O painel admin grava no Firestore e sobrescreve estes valores.
    ============================================================ */
 
 const CMS_DEFAULTS = {
+
   config: {
     whatsapp: "5562999999999",
     whatsappMessages: {
-      header: "Olá! Gostaria de entender melhor os serviços do Espaço Erika Espíndola e verificar qual acompanhamento faz mais sentido para minha necessidade.",
-      hero: "Olá! Gostaria de entender melhor os serviços do Espaço Erika Espíndola e verificar qual acompanhamento faz mais sentido para minha necessidade.",
-      horarios: "Olá! Gostaria de entender melhor os serviços do Espaço Erika Espíndola e verificar qual acompanhamento faz mais sentido para minha necessidade.",
-      footer: "Olá! Gostaria de entender melhor os serviços do Espaço Erika Espíndola e verificar qual acompanhamento faz mais sentido para minha necessidade.",
-      contato: "Olá! Gostaria de entender melhor os serviços do Espaço Erika Espíndola e verificar qual acompanhamento faz mais sentido para minha necessidade.",
-      float: "Olá! Gostaria de entender melhor os serviços do Espaço Erika Espíndola e verificar qual acompanhamento faz mais sentido para minha necessidade."
+      header:    "Olá, gostaria de agendar uma conversa.",
+      hero:      "Olá, gostaria de agendar uma conversa.",
+      horarios:  "Olá, gostaria de saber os valores e disponibilidade de agenda.",
+      footer:    "Olá, gostaria de falar com a Erika.",
+      contato:   "Olá, gostaria de falar com a Erika.",
+      float:     "Olá, gostaria de agendar uma conversa."
     },
-    siteTitle: "Espaço Erika Espíndola | Acolhimento emocional e desenvolvimento humano",
-    siteDesc: "Atendimentos, avaliações, acompanhamento infantil e oficinas terapêuticas para crianças, adolescentes, mulheres e famílias em um ambiente acolhedor, seguro e humanizado.",
-    siteKeywords: "Erika Espíndola, acolhimento emocional, avaliação psicológica, avaliação neuropsicológica, acompanhamento infantil, ABA, AT, oficinas terapêuticas, orientação familiar",
-    ogTitle: "Espaço Erika Espíndola | Acolhimento emocional e desenvolvimento humano",
-    ogDesc: "Um espaço seguro para crianças, adolescentes, mulheres e famílias. Escuta, acolhimento e cuidado integrado em cada etapa.",
-    ogImage: "assets/img/erika-hero.jpg",
-    favicon: "assets/icons/favicon.png",
-    endereco: "Espaço Erika Espíndola. Endereço informado pelo WhatsApp conforme agendamento.",
-    footerCrp: "Espaço Erika Espíndola",
-    footerTag: "acolhimento emocional • desenvolvimento humano • cuidado integrado",
-    footerReach: "Atendimento para crianças, adolescentes, mulheres e famílias",
-    copyright: "© 2026 Espaço Erika Espíndola. Todos os direitos reservados.",
-    legal: { termsUpdated: "Última atualização: maio de 2026", privacyUpdated: "Última atualização: maio de 2026", termsHtml: "", privacyHtml: "" }
+    siteTitle:   "Erika Espíndola | Abordagem Junguiana | Goiânia e Online",
+    siteDesc:    "Erika Espíndola, terapeuta com abordagem junguiana. Atendimento presencial em Goiânia e online para todo o Brasil. Um espaço de acolhimento, escuta e autoconhecimento.",
+    siteKeywords:"abordagem junguiana, Goiânia, ansiedade, autoconhecimento, atendimento terapêutico online, Erika Espíndola",
+    ogTitle:     "Erika Espíndola | Abordagem Junguiana | Goiânia e Online",
+    ogDesc:      "Um espaço de acolhimento, escuta terapêutica e autoconhecimento. Atendimento presencial em Goiânia e online para todo o Brasil.",
+    ogImage:     "assets/img/erika-hero.jpg",
+    favicon:     "assets/icons/favicon.png",
+    endereco:    "Goiânia — GO. Endereço completo informado após o agendamento.",
+    footerCrp:   "Terapeuta — Goiânia, GO",
+    footerTag:   "Terapeuta com abordagem junguiana",
+    footerReach: "Atendimento online para todo o Brasil",
+    copyright:   "© 2025 Erika Espíndola. Todos os direitos reservados.",
+    legal: {
+      termsUpdated: "Última atualização: agosto de 2025",
+      privacyUpdated: "Última atualização: agosto de 2025",
+      termsHtml: "",
+      privacyHtml: ""
+    }
   },
+
   theme: {
-    cream: "#f7f3ee", creamDark: "#f0ebe3", sand: "#e8ddd0", sandMid: "#d6c9b8", mocha: "#9c7b5a", mochaDark: "#7a5c3e", mochaLight: "#b8956f", brownSoft: "#c4a882", nude: "#e6d5c3", warmGray: "#9e9188", textDark: "#2d2520", textMid: "#5a4e45", textLight: "#8a7d73", sectionV: "120px", radiusSm: "12px", radiusMd: "24px", radiusXl: "60px"
+    cream:       "#f7f3ee",
+    creamDark:   "#f0ebe3",
+    sand:        "#e8ddd0",
+    sandMid:     "#d6c9b8",
+    mocha:       "#9c7b5a",
+    mochaDark:   "#7a5c3e",
+    mochaLight:  "#b8956f",
+    brownSoft:   "#c4a882",
+    nude:        "#e6d5c3",
+    warmGray:    "#9e9188",
+    textDark:    "#2d2520",
+    textMid:     "#5a4e45",
+    textLight:   "#8a7d73",
+    sectionV:    "120px",
+    radiusSm:    "12px",
+    radiusMd:    "24px",
+    radiusXl:    "60px"
   },
+
   content: {
-    layoutVersion: "espaco-erika-v2-2026-05-30",
     hero: {
-      tag: "Acolhimento emocional • desenvolvimento humano • cuidado integrado",
-      title: "Um espaço de acolhimento e desenvolvimento emocional para crianças, adolescentes, mulheres e famílias.",
-      sub: "Atendimentos, avaliações, acompanhamento infantil e oficinas terapêuticas em um ambiente humanizado, seguro e pensado para cuidar de cada história com sensibilidade, respeito e direção.",
-      btnPrimary: "Falar pelo WhatsApp",
-      btnGhost: "Conhecer os serviços"
+      tag:      "Abordagem junguiana",
+      title:    "Um espaço de<br /><em>acolhimento, escuta</em><br />e autoconhecimento.",
+      sub:      "Atendimento presencial em Goiânia<br />e online para todo o Brasil.",
+      btnPrimary: "Agendar pelo WhatsApp",
+      btnGhost:   "Conhecer meu trabalho"
     },
     sobre: {
-      label: "Nosso espaço",
-      title: "Um espaço criado para acolher, orientar e desenvolver.",
-      p1: "O Espaço Erika Espíndola nasce do desejo de construir um ambiente acolhedor, sensível e humanizado, onde crianças, adolescentes, mulheres e famílias possam encontrar escuta, orientação e desenvolvimento emocional.",
-      p2: "Mais do que atendimentos, acreditamos na construção de vínculos, no cuidado respeitoso e em experiências que favoreçam pertencimento, expressão emocional e crescimento humano.",
-      p3: "Cada pessoa é recebida com atenção à sua história, necessidades e tempo, integrando diferentes formas de cuidado em um espaço seguro, leve e acolhedor.",
-      cards: []
+      label:    "Sobre meu trabalho",
+      title:    "Cada pessoa carrega histórias,<br /><em>dores e potenciais únicos.</em>",
+      p1:       "O primeiro passo do nosso encontro é a <strong>entrevista inicial</strong> — um momento de escuta e acolhimento para compreender suas necessidades, expectativas e trajetória de vida. Essa sessão tem duração aproximada de 50 minutos e é fundamental para que possamos construir juntos o caminho terapêutico.",
+      p2:       "A partir daí, iniciamos os <strong>atendimentos terapêuticos</strong>, que podem abordar questões emocionais e relacionais, processos de autoconhecimento e transformação pessoal.",
+      p3:       "Minha prática é guiada pela <strong>abordagem junguiana</strong>, que valoriza símbolos, sonhos e experiências como ferramentas de autodescoberta e desenvolvimento.",
+      cards: [
+        { title: "Questões emocionais",    text: "Ansiedade, angústia, insegurança e medos que impactam o dia a dia." },
+        { title: "Relacionamentos e vínculos", text: "Padrões relacionais, vínculos afetivos e dinâmicas interpessoais." },
+        { title: "Autoconhecimento",       text: "Desenvolvimento pessoal e compreensão mais profunda de si mesmo." },
+        { title: "Transformação e crises", text: "Atravessar momentos difíceis e encontrar novos caminhos de vida." }
+      ]
     },
     atendimentos: {
-      label: "Para quem é o espaço",
-      title: "Para quem busca cuidado, direção e acolhimento.",
+      label: "Áreas de atendimento",
+      title: "O que podemos<br /><em>trabalhar juntos</em>",
       cards: [
-        { title: "Crianças", text: "Acompanhamento do desenvolvimento, expressão emocional, suporte às demandas comportamentais e atividades que favorecem vínculo, autonomia e comunicação." },
-        { title: "Adolescentes", text: "Escuta, orientação e apoio em fases de mudança, inseguranças, relações, emoções intensas e construção de identidade." },
-        { title: "Mulheres", text: "Acolhimento para mulheres sobrecarregadas, mães, profissionais e pessoas que sentem que têm cuidado de tudo, menos de si." },
-        { title: "Famílias", text: "Orientação, devolutivas, escuta familiar e construção de caminhos possíveis para apoiar o desenvolvimento emocional e relacional." }
+        { title: "Ansiedade",              text: "Identificar padrões, acolher a angústia e desenvolver recursos internos." },
+        { title: "Angústia e medos",       text: "Compreender a origem e encontrar formas de atravessar o que pesa." },
+        { title: "Insegurança",            text: "Fortalecer a autoconfiança e a conexão com os próprios valores." },
+        { title: "Relacionamentos",        text: "Explorar dinâmicas afetivas, vínculos e padrões que se repetem." },
+        { title: "Autoconhecimento",       text: "Aprofundar a compreensão de si mesmo, seus desejos e potenciais." },
+        { title: "Desenvolvimento pessoal",text: "Ressignificar experiências e construir uma vida com mais sentido." },
+        { title: "Enfrentamento de crises",text: "Apoio para atravessar momentos de ruptura, luto e transições." },
+        { title: "Transformação pessoal",  text: "Processos de mudança profunda e reconexão com sua essência." }
       ]
     },
     junguiana: {
-      label: "Nossos serviços",
-      title: "Cuidado integrado para diferentes momentos e necessidades.",
-      p1: "Avaliações, atendimentos, acompanhamento infantil, oficinas terapêuticas e orientação familiar reunidos em uma proposta de cuidado sensível, ética e direcionada.",
-      p2: "Cada serviço pode ser indicado conforme a necessidade da pessoa ou da família, respeitando o momento, o contexto e os objetivos do acompanhamento.",
-      p3: "O primeiro contato ajuda a compreender qual caminho faz mais sentido para cada história.",
-      pillars: ["Avaliação", "Atendimento", "Acompanhamento", "Oficinas", "Família"],
-      services: [
-        { title: "Avaliação Psicológica e Neuropsicológica", text: "Avaliações conduzidas por profissional habilitada, auxiliando na compreensão do funcionamento emocional, cognitivo e comportamental de crianças, adolescentes e adultos.", cta: "Indicado para: dificuldades de aprendizagem; alterações no desenvolvimento; questões emocionais e comportamentais; orientação escolar e familiar; necessidade de laudos e relatórios técnicos." },
-        { title: "Atendimento Psicológico", text: "Atendimento realizado com escuta ética, acolhedora e individualizada, voltado à compreensão das emoções, relações, conflitos internos e processos de desenvolvimento pessoal.", cta: "Indicado para: ansiedade; insegurança; conflitos emocionais; relacionamentos; fases de transição; sofrimento emocional." },
-        { title: "Acompanhamento Infantil • ABA • AT", text: "Acompanhamento voltado ao desenvolvimento infantil, com apoio individualizado, atividades direcionadas, estímulo à autonomia, comunicação, interação social e organização comportamental.", cta: "Indicado para: atrasos no desenvolvimento; suporte comportamental; habilidades sociais; rotina e autonomia; acompanhamento terapêutico." },
-        { title: "Oficinas Terapêuticas e Emocionais", text: "Experiências em grupo que utilizam recursos expressivos, criativos e relacionais para trabalhar emoções, vínculos, autoestima, pertencimento e desenvolvimento humano.", cta: "Possíveis oficinas: Oficina das Emoções; Oficina de Pintura e Expressão; Grupo para Mulheres; Grupo de Adolescentes; Oficina Mães e Filhos; Vivências de Autoconhecimento." },
-        { title: "Orientação Familiar", text: "Encontros voltados à escuta da família, compreensão das demandas e construção de estratégias de cuidado, vínculo, rotina e acompanhamento do desenvolvimento.", cta: "Indicado para: famílias em processo de avaliação; pais que se sentem perdidos; mães sobrecarregadas; alinhamento entre escola, família e acompanhamento." }
+      label:  "Abordagem",
+      title:  "Abordagem<br /><em>Junguiana</em>",
+      p1:     "Desenvolvida por Carl Gustav Jung, essa abordagem compreende o ser humano em sua totalidade — consciente e inconsciente, razão e emoção, luz e sombra.",
+      p2:     "No atendimento terapêutico, <strong>símbolos, sonhos e vivências</strong> tornam-se pontes para o autoconhecimento. Não se trata de encontrar respostas prontas, mas de aprofundar a escuta de si mesmo.",
+      p3:     "Cada pessoa é única em sua história, e o processo se constrói de forma singular, respeitando seu tempo, suas dores e seus potenciais.",
+      pillars: ["Símbolos", "Sonhos", "Inconsciente", "Autoconhecimento"]
+    },
+    espaco: {
+      label:  "Conheça meu espaço",
+      title:  "Um ambiente pensado<br /><em>para você se sentir em casa</em>",
+      sub:    "O espaço foi planejado para oferecer calma, acolhimento e sigilo — um lugar onde você pode falar sobre o que carrega com segurança e leveza.",
+      values: [
+        { title: "Calma",       text: "Ambiente pensado para desacelerar e se conectar consigo mesmo." },
+        { title: "Acolhimento", text: "Um espaço que recebe sua história sem julgamentos." },
+        { title: "Sigilo",      text: "Total confidencialidade, respeitando princípios éticos e limites legais aplicáveis." },
+        { title: "Segurança",   text: "Um ambiente seguro para falar sobre o que carrega." }
       ]
     },
     processo: {
       label: "Como funciona",
-      title: "Como começa o cuidado",
+      title: "O caminho do<br /><em>nosso encontro</em>",
       steps: [
-        { num: "1", title: "Primeiro contato", text: "A pessoa ou família entra em contato pelo WhatsApp para compartilhar brevemente sua demanda." },
-        { num: "2", title: "Acolhimento inicial", text: "Realizamos uma escuta inicial para compreender a necessidade e indicar o melhor caminho dentro do espaço." },
-        { num: "3", title: "Direcionamento", text: "A demanda pode ser encaminhada para avaliação, atendimento psicológico, acompanhamento infantil, oficinas ou orientação familiar." },
-        { num: "4", title: "Plano de cuidado", text: "A equipe organiza a melhor forma de acompanhamento, respeitando o momento, contexto e necessidade de cada pessoa." },
-        { num: "5", title: "Acompanhamento", text: "O processo acontece de forma humanizada, com cuidado, devolutivas e acompanhamento contínuo quando necessário." }
+        { num: "01", title: "Primeiro contato",        text: "Você entra em contato pelo WhatsApp para tirar dúvidas iniciais e verificar disponibilidade de agenda." },
+        { num: "02", title: "Entrevista inicial",      text: "Nossa primeira sessão — um momento de escuta acolhedora para compreender sua história, necessidades e expectativas." },
+        { num: "03", title: "Compreensão da demanda",  text: "Juntos, identificamos o que está pesando e como o atendimento terapêutico pode apoiar sua trajetória." },
+        { num: "04", title: "Atendimento terapêutico", text: "Encontros semanais de 50 minutos, construídos de forma singular para cada pessoa, respeitando seu ritmo." },
+        { num: "05", title: "Acompanhamento contínuo", text: "O processo evolui junto com você — com espaço para revisitar e aprofundar o que surge ao longo do caminho." }
       ]
     },
     horarios: {
-      label: "Projetos e oficinas",
-      title: "Projetos criados para fortalecer vínculos, expressão e pertencimento.",
-      schedule: [],
-      cards: [
-        { title: "Oficina das Emoções", text: "Atividades lúdicas e expressivas para ajudar crianças a compreenderem, nomearem e expressarem emoções de forma saudável.", cta: "" },
-        { title: "Roda de Acolhimento para Mulheres", text: "Um espaço de escuta, partilha e acolhimento para mulheres emocionalmente sobrecarregadas, mães e profissionais que sentem dificuldade em cuidar de si.", cta: "" },
-        { title: "Grupo de Adolescentes", text: "Espaço voltado ao diálogo, expressão emocional, pertencimento, autoestima e construção de identidade.", cta: "" },
-        { title: "Oficina Mães e Filhos", text: "Vivências criadas para fortalecer vínculo, comunicação afetiva e presença emocional entre mães e crianças.", cta: "" }
+      label:   "Horários e valores",
+      title:   "Disponibilidade<br /><em>e formas de atendimento</em>",
+      schedule: [
+        { label: "Dias",       value: "Segunda a sábado" },
+        { label: "Horários",   value: "08h às 19h" },
+        { label: "Duração",    value: "50 minutos por sessão" },
+        { label: "Frequência", value: "1 vez por semana" }
       ],
-      pagamento: [],
-      btnText: "Falar pelo WhatsApp"
+      cards: [
+        { title: "Sessão avulsa",  text: "Valor individual por atendimento, ideal para quem está começando ou tem demanda pontual.", cta: "Consulte disponibilidade e valores pelo WhatsApp." },
+        { title: "Pacote mensal",  text: "Valor reduzido por mês para quem opta pelo processo contínuo e frequência semanal.", cta: "Consulte disponibilidade e valores pelo WhatsApp." }
+      ],
+      pagamento: ["PIX", "Transferência", "Cartão"],
+      btnText: "Consultar pelo WhatsApp"
     },
     experiencia: {
-      label: "Diferenciais",
-      title: "Mais do que atendimentos, acreditamos em cuidado com presença.",
-      p1: "ambiente acolhedor e humanizado; cuidado integrado; escuta individualizada; atenção à singularidade de cada pessoa; experiências emocionais e oficinas; suporte às famílias; acolhimento respeitoso e sensível.",
-      p2: "",
-      p3: "",
-      btnText: "Falar pelo WhatsApp"
+      label: "Minha experiência",
+      title: "Uma prática<br /><em>fundamentada e humana</em>",
+      p1:    "Sou terapeuta com <strong>abordagem junguiana</strong> e atuação em atendimento terapêutico individual.",
+      p2:    "Minha prática busca compreender símbolos, sonhos e vivências como caminhos de <strong>autoconhecimento e transformação pessoal</strong>.",
+      p3:    "Trago em cada atendimento o compromisso de oferecer um <strong>espaço seguro, ético e acolhedor</strong>, no qual cada pessoa possa se sentir respeitada em sua singularidade e apoiada em seu processo de desenvolvimento pessoal.",
+      btnText: "Quero começar"
     },
-    faq: { label: "", title: "", items: [] },
+    faq: {
+      label: "Perguntas frequentes",
+      title: "Ainda tem<br /><em>dúvidas?</em>",
+      items: [
+        { q: "Como funciona a primeira sessão?",        a: "A primeira sessão é a entrevista inicial — um momento de escuta, sem julgamentos. Você compartilha o que quiser sobre sua trajetória, necessidades e expectativas. Essa conversa tem duração de aproximadamente 50 minutos e é fundamental para construirmos juntos o caminho terapêutico mais adequado para você." },
+        { q: "O atendimento online funciona bem?",      a: "Sim. O atendimento online pode ser uma alternativa adequada para muitas pessoas e é realizado por videochamada em plataformas seguras. Você pode fazer sua sessão de onde estiver — de casa, do trabalho ou de qualquer lugar no Brasil. O sigilo e a qualidade do vínculo terapêutico são preservados." },
+        { q: "Quanto tempo dura cada encontro?",        a: "Os encontros têm duração aproximada de 50 minutos. Esse tempo favorece uma escuta cuidadosa e consistente a cada atendimento." },
+        { q: "Qual a frequência ideal de atendimento?", a: "A frequência costuma ser semanal. Esse ritmo favorece continuidade, vínculo e aprofundamento do processo de autoconhecimento." },
+        { q: "O atendimento é sigiloso?",               a: "Sim. O sigilo é um princípio fundamental do atendimento terapêutico. Tudo o que você compartilhar é tratado com confidencialidade, dentro dos limites legais e éticos aplicáveis. Você pode falar com liberdade e segurança." },
+        { q: "Como funciona o agendamento?",            a: "O agendamento é feito pelo WhatsApp. Você entra em contato, verificamos a disponibilidade de agenda e combinamos dia, horário e modalidade (presencial ou online). Simples e sem burocracia." },
+        { q: "Quais formas de pagamento são aceitas?",  a: "São aceitos PIX, transferência bancária e cartão de crédito ou débito. Para saber os valores e condições detalhadas, entre em contato pelo WhatsApp." }
+      ]
+    },
     contato: {
-      label: "",
-      title: "Você não precisa atravessar tudo sozinho.",
-      sub: "Se você sente que precisa de acolhimento, orientação ou um espaço seguro para cuidar de si ou de alguém da sua família, entre em contato. Vamos entender sua necessidade e indicar o melhor caminho.",
-      formTitle: "Falar pelo WhatsApp",
-      formSub: "O envio abrirá o WhatsApp com sua mensagem preenchida."
+      label:   "Contato",
+      title:   "Vamos<br /><em>conversar?</em>",
+      sub:     "Dar o primeiro passo é o mais importante. Entre em contato e vamos encontrar o melhor caminho para você.",
+      formTitle: "Enviar uma mensagem",
+      formSub:   "O envio abrirá o WhatsApp com sua mensagem preenchida."
     },
     menu: {
       links: [
-        { label: "Início", href: "#inicio", visible: true },
-        { label: "Nosso espaço", href: "#sobre", visible: true },
-        { label: "Para quem", href: "#atendimentos", visible: true },
-        { label: "Serviços", href: "#junguiana", visible: true },
-        { label: "Como funciona", href: "#processo", visible: true },
-        { label: "Projetos", href: "#horarios", visible: true },
-        { label: "Contato", href: "#contato", visible: true }
+        { label: "Início",       href: "#inicio",      visible: true },
+        { label: "Sobre",        href: "#sobre",       visible: true },
+        { label: "Atendimentos", href: "#atendimentos",visible: true },
+        { label: "Espaço",       href: "#espaco",      visible: true },
+        { label: "Horários",     href: "#horarios",    visible: true },
+        { label: "FAQ",          href: "#faq",         visible: true },
+        { label: "Contato",      href: "#contato",     visible: true }
       ],
-      ctaText: "Falar pelo WhatsApp"
+      ctaText: "Agendar conversa"
     },
     sections: [
-      { id: "inicio", visible: true }, { id: "sobre", visible: true }, { id: "atendimentos", visible: true }, { id: "junguiana", visible: true }, { id: "processo", visible: true }, { id: "horarios", visible: true }, { id: "experiencia", visible: true }, { id: "contato", visible: true }
+      { id: "inicio", visible: true },
+      { id: "sobre", visible: true },
+      { id: "atendimentos", visible: true },
+      { id: "junguiana", visible: true },
+      { id: "espaco", visible: true },
+      { id: "processo", visible: true },
+      { id: "horarios", visible: true },
+      { id: "experiencia", visible: true },
+      { id: "faq", visible: true },
+      { id: "contato", visible: true }
     ],
     blocks: []
   },
+
   assets: {
-    "erika-hero": { src: "assets/img/erika-hero.jpg", alt: "Erika Espíndola no Espaço Erika Espíndola", width: "", height: "", fit: "cover", position: "center", radius: "" },
-    "erika-experiencia": { src: "assets/img/erika-experiencia.jpg", alt: "Erika Espíndola em ambiente profissional", width: "", height: "", fit: "cover", position: "center", radius: "" },
-    "espaco-consultorio": { src: "assets/img/espaco-consultorio.jpg", alt: "Espaço de atendimento acolhedor", width: "", height: "", fit: "cover", position: "center", radius: "" },
-    "espaco-jardim": { src: "assets/img/espaco-jardim.jpg", alt: "Área externa do espaço", width: "", height: "", fit: "cover", position: "center", radius: "" },
-    "espaco-sala": { src: "assets/img/espaco-sala.jpg", alt: "Sala do espaço terapêutico", width: "", height: "", fit: "cover", position: "center", radius: "" },
-    "decorativo-agua": { src: "assets/img/decorativo-agua.png", alt: "Imagem decorativa", width: "", height: "", fit: "cover", position: "center", radius: "" }
+    "erika-hero": { src: "assets/img/erika-hero.jpg", alt: "Erika Espíndola, terapeuta junguiana, sorrindo", width: "", height: "", fit: "cover", position: "center", radius: "" },
+    "erika-experiencia": { src: "assets/img/erika-experiencia.jpg", alt: "Erika Espíndola em atendimento terapêutico", width: "", height: "", fit: "cover", position: "center", radius: "" },
+    "espaco-consultorio": { src: "assets/img/espaco-consultorio.jpg", alt: "Espaço de atendimento terapêutico", width: "", height: "", fit: "cover", position: "center", radius: "" },
+    "espaco-jardim": { src: "assets/img/espaco-jardim.jpg", alt: "Área acolhedora do espaço", width: "", height: "", fit: "cover", position: "center", radius: "" },
+    "espaco-sala": { src: "assets/img/espaco-sala.jpg", alt: "Sala de escuta terapêutica", width: "", height: "", fit: "cover", position: "center", radius: "" },
+    "decorativo-agua": { src: "assets/img/decorativo-agua.png", alt: "Imagem decorativa com água", width: "", height: "", fit: "cover", position: "center", radius: "" }
   }
 };
 
+// Exporta para uso no admin e no site
 if (typeof module !== 'undefined') module.exports = CMS_DEFAULTS;

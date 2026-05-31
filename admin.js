@@ -208,7 +208,6 @@ async function loadAllData() {
   // Override com dados locais
   const local = loadFromLocal();
   if (local) {
-    if (local.content && local.content.layoutVersion !== 'espaco-erika-v2-2026-05-30') local.content = DEFAULTS.content || {};
     cmsData = deepMerge(cmsData, local);
   }
 
@@ -224,12 +223,7 @@ async function loadAllData() {
 
       if (cfgDoc.exists)     cmsData.config  = deepMerge(cmsData.config,  cfgDoc.data());
       if (themeDoc.exists)   cmsData.theme   = deepMerge(cmsData.theme,   themeDoc.data());
-      if (contentDoc.exists) {
-        const incomingContent = contentDoc.data();
-        cmsData.content = incomingContent.layoutVersion === 'espaco-erika-v2-2026-05-30'
-          ? deepMerge(cmsData.content, incomingContent)
-          : deepMerge(cmsData.content, DEFAULTS.content || {});
-      }
+      if (contentDoc.exists) cmsData.content = deepMerge(cmsData.content, contentDoc.data());
       if (assetsDoc.exists)  cmsData.assets  = deepMerge(cmsData.assets || {}, assetsDoc.data());
     } catch (e) {
       console.warn('Erro ao carregar Firebase, usando dados locais:', e);
@@ -431,7 +425,6 @@ function populateConteudo() {
   val('#jung-p2',      jg.p2      || '');
   val('#jung-p3',      jg.p3      || '');
   val('#jung-pillars', (jg.pillars || []).join(', '));
-  renderCardsList('jung-services-list', jg.services || [], 'jung-services', ['title','text','cta']);
 
   // Espaço
   const esp = ct.espaco || {};
@@ -758,7 +751,6 @@ function setupAddCardHandlers() {
       const fieldsBySection = {
         'sobre':        ['title','text'],
         'atend':        ['title','text'],
-        'jung-services':['title','text','cta'],
         'espaco-values':['title','text'],
         'proc-steps':   ['num','title','text'],
         'hor-schedule': ['label','value'],
@@ -884,10 +876,8 @@ function setupSaveHandlers() {
         p1:      $('#jung-p1')?.value    || '',
         p2:      $('#jung-p2')?.value    || '',
         p3:      $('#jung-p3')?.value    || '',
-        pillars: ($('#jung-pillars')?.value || '').split(',').map(s => s.trim()).filter(Boolean),
-        services: readCardsList('jung-services-list', ['title','text','cta'])
+        pillars: ($('#jung-pillars')?.value || '').split(',').map(s => s.trim()).filter(Boolean)
       };
-      content.layoutVersion = 'espaco-erika-v2-2026-05-30';
 
       content.espaco = {
         label:  $('#espaco-label')?.value || '',

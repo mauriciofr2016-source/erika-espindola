@@ -10,7 +10,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="admin.css" />
-    <meta name="theme-color" content="#F5ECE7">
 </head>
 <body class="admin-body">
 
@@ -162,13 +161,13 @@
         <!-- Sub-navegação de seções -->
         <div class="section-tabs">
           <button class="section-tab active" data-section="hero">Início</button>
-          <button class="section-tab" data-section="sobre">Nosso espaço</button>
-          <button class="section-tab" data-section="atendimentos">Para quem</button>
-          <button class="section-tab" data-section="junguiana">Serviços</button>
-          <button class="section-tab" data-section="espaco">Galeria/extra</button>
+          <button class="section-tab" data-section="sobre">Sobre</button>
+          <button class="section-tab" data-section="atendimentos">Atendimentos</button>
+          <button class="section-tab" data-section="junguiana">Abordagem</button>
+          <button class="section-tab" data-section="espaco">Espaço</button>
           <button class="section-tab" data-section="processo">Como funciona</button>
-          <button class="section-tab" data-section="horarios">Projetos</button>
-          <button class="section-tab" data-section="experiencia">Diferenciais</button>
+          <button class="section-tab" data-section="horarios">Horários</button>
+          <button class="section-tab" data-section="experiencia">Experiência</button>
           <button class="section-tab" data-section="contato">Contato</button>
           <button class="section-tab" data-section="menu">Menu</button>
         </div>
@@ -205,7 +204,7 @@
         <!-- SOBRE -->
         <div class="section-panel" id="section-sobre" style="display:none">
           <div class="admin-section">
-            <h2 class="admin-section__title">Seção: Nosso espaço</h2>
+            <h2 class="admin-section__title">Seção: Sobre meu trabalho</h2>
             <div class="form-grid">
               <div class="form-group">
                 <label>Rótulo da seção</label>
@@ -228,7 +227,7 @@
                 <textarea id="sobre-p3" rows="3"></textarea>
               </div>
             </div>
-            <h3 class="admin-section__subtitle">Cards extras desta seção</h3>
+            <h3 class="admin-section__subtitle">Cards de abordagens</h3>
             <div id="sobre-cards-list" class="cards-editor"></div>
             <button class="btn-admin btn-admin--ghost add-card-btn" data-section="sobre">+ Adicionar card</button>
           </div>
@@ -237,7 +236,7 @@
         <!-- ATENDIMENTOS -->
         <div class="section-panel" id="section-atendimentos" style="display:none">
           <div class="admin-section">
-            <h2 class="admin-section__title">Seção: Para quem é o espaço</h2>
+            <h2 class="admin-section__title">Seção: Áreas de Atendimento</h2>
             <div class="form-grid">
               <div class="form-group">
                 <label>Rótulo da seção</label>
@@ -248,7 +247,7 @@
                 <textarea id="atend-title" rows="2"></textarea>
               </div>
             </div>
-            <h3 class="admin-section__subtitle">Cards de público</h3>
+            <h3 class="admin-section__subtitle">Cards de atendimento</h3>
             <div id="atend-cards-list" class="cards-editor"></div>
             <button class="btn-admin btn-admin--ghost add-card-btn" data-section="atend">+ Adicionar card</button>
           </div>
@@ -257,7 +256,7 @@
         <!-- JUNGUIANA -->
         <div class="section-panel" id="section-junguiana" style="display:none">
           <div class="admin-section">
-            <h2 class="admin-section__title">Seção: Nossos serviços</h2>
+            <h2 class="admin-section__title">Seção: Abordagem Junguiana</h2>
             <div class="form-grid">
               <div class="form-group">
                 <label>Rótulo da seção</label>
@@ -280,15 +279,9 @@
                 <textarea id="jung-p3" rows="3"></textarea>
               </div>
               <div class="form-group">
-                <label>Resumo/etiquetas dos serviços (separados por vírgula)</label>
-                <input type="text" id="jung-pillars" placeholder="Avaliação, Atendimento, Acompanhamento, Oficinas, Família" />
+                <label>Pilares (separados por vírgula)</label>
+                <input type="text" id="jung-pillars" placeholder="Símbolos, Sonhos, Inconsciente, Autoconhecimento" />
               </div>
-            </div>
-            <h3 class="admin-section__subtitle">Cards de serviços</h3>
-            <p class="admin-section__desc">Use o campo CTA para editar o trecho “Indicado para” ou “Possíveis oficinas”.</p>
-            <div id="jung-services-list" class="cards-editor"></div>
-            <button type="button" class="btn-admin btn-admin--ghost add-card-btn" data-section="jung-services" data-fields="title,text,cta">+ Adicionar serviço</button>
-            <div class="form-grid">
             </div>
           </div>
         </div>
@@ -340,7 +333,7 @@
         <!-- HORÁRIOS -->
         <div class="section-panel" id="section-horarios" style="display:none">
           <div class="admin-section">
-            <h2 class="admin-section__title">Seção: Projetos e oficinas</h2>
+            <h2 class="admin-section__title">Seção: Horários e Valores</h2>
             <div class="form-grid">
               <div class="form-group">
                 <label>Rótulo da seção</label>
@@ -371,7 +364,7 @@
         <!-- EXPERIÊNCIA -->
         <div class="section-panel" id="section-experiencia" style="display:none">
           <div class="admin-section">
-            <h2 class="admin-section__title">Seção: Diferenciais</h2>
+            <h2 class="admin-section__title">Seção: Minha Experiência</h2>
             <div class="form-grid">
               <div class="form-group">
                 <label>Rótulo da seção</label>
@@ -404,7 +397,7 @@
         <!-- CONTATO -->
         <div class="section-panel" id="section-contato" style="display:none">
           <div class="admin-section">
-            <h2 class="admin-section__title">Seção: Chamada final / contato</h2>
+            <h2 class="admin-section__title">Seção: Contato</h2>
             <div class="form-grid">
               <div class="form-group">
                 <label>Rótulo da seção</label>

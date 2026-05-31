@@ -4,205 +4,728 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#f5f0eb" />
-  <title>Espaço Erika Espíndola | Acolhimento emocional e desenvolvimento humano</title>
-  <meta name="description" content="Atendimentos, avaliações, acompanhamento infantil e oficinas terapêuticas para crianças, adolescentes, mulheres e famílias em um ambiente acolhedor, seguro e humanizado." />
-  <meta name="keywords" content="Erika Espíndola, acolhimento emocional, avaliação psicológica, avaliação neuropsicológica, acompanhamento infantil, ABA, AT, oficinas terapêuticas, orientação familiar" />
+
+  <title>Erika Espíndola | Abordagem Junguiana | Goiânia e Online</title>
+  <meta name="description" content="Erika Espíndola, terapeuta com abordagem junguiana. Atendimento presencial em Goiânia e online para todo o Brasil. Um espaço de acolhimento, escuta e autoconhecimento." />
+  <meta name="keywords" content="abordagem junguiana, Goiânia, ansiedade, autoconhecimento, atendimento terapêutico online, Erika Espíndola" />
   <meta name="author" content="Erika Espíndola" />
   <meta name="robots" content="index, follow" />
-  <meta property="og:title" content="Espaço Erika Espíndola | Acolhimento emocional e desenvolvimento humano" />
-  <meta property="og:description" content="Um espaço seguro para crianças, adolescentes, mulheres e famílias. Escuta, acolhimento e cuidado integrado em cada etapa." />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Erika Espíndola | Abordagem Junguiana | Goiânia e Online" />
+  <meta property="og:description" content="Um espaço de acolhimento, escuta e autoconhecimento. Atendimento presencial em Goiânia e online para todo o Brasil." />
   <meta property="og:type" content="website" />
   <meta property="og:image" content="./assets/img/erika-hero.jpg" />
   <meta property="og:locale" content="pt_BR" />
+
+  <!-- PWA -->
   <link rel="manifest" href="manifest.json" />
   <link rel="apple-touch-icon" href="assets/icons/icon-192.png" />
   <link rel="icon" type="image/png" href="assets/icons/favicon.png" />
+
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+
+  <!-- ========== HEADER ========== -->
   <header class="header" id="header" role="banner">
     <div class="header__inner">
-      <a href="#inicio" class="header__logo" aria-label="Espaço Erika Espíndola — Início">
-        <span class="logo-name">Espaço Erika Espíndola</span>
-        <span class="logo-sub">Acolhimento emocional</span>
+      <a href="#inicio" class="header__logo" aria-label="Erika Espíndola — Início">
+        <span class="logo-name">Erika Espíndola</span>
+        <span class="logo-sub">Abordagem Junguiana</span>
       </a>
+
       <nav class="header__nav" aria-label="Menu principal">
         <ul class="nav__list">
           <li><a href="#inicio" class="nav__link">Início</a></li>
-          <li><a href="#sobre" class="nav__link">Nosso espaço</a></li>
-          <li><a href="#atendimentos" class="nav__link">Para quem</a></li>
-          <li><a href="#junguiana" class="nav__link">Serviços</a></li>
-          <li><a href="#processo" class="nav__link">Como funciona</a></li>
-          <li><a href="#horarios" class="nav__link">Projetos</a></li>
+          <li><a href="#sobre" class="nav__link">Sobre</a></li>
+          <li><a href="#atendimentos" class="nav__link">Atendimentos</a></li>
+          <li><a href="#espaco" class="nav__link">Espaço</a></li>
+          <li><a href="#horarios" class="nav__link">Horários</a></li>
+          <li><a href="#faq" class="nav__link">FAQ</a></li>
           <li><a href="#contato" class="nav__link">Contato</a></li>
         </ul>
       </nav>
-      <a href="#contato" class="btn btn--outline header__cta js-whatsapp" data-whatsapp-message="Olá! Gostaria de entender melhor os serviços do Espaço Erika Espíndola e verificar qual acompanhamento faz mais sentido para minha necessidade." target="_blank" rel="noopener noreferrer">Falar pelo WhatsApp</a>
-      <button class="hamburger" id="hamburger" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobile-menu"><span></span><span></span><span></span></button>
+
+      <a href="#contato"
+         class="btn btn--outline header__cta js-whatsapp"
+         data-whatsapp-message="Olá, gostaria de agendar uma conversa."
+         target="_blank" 
+         rel="noopener noreferrer"
+         aria-label="Agendar conversa pelo WhatsApp">
+        Agendar conversa
+      </a>
+
+      <button class="hamburger" id="hamburger" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobile-menu">
+        <span></span><span></span><span></span>
+      </button>
     </div>
+
+    <!-- Mobile Menu -->
     <nav class="mobile-menu" id="mobile-menu" aria-hidden="true" role="navigation" aria-label="Menu mobile">
       <ul>
         <li><a href="#inicio" class="mobile-link">Início</a></li>
-        <li><a href="#sobre" class="mobile-link">Nosso espaço</a></li>
-        <li><a href="#atendimentos" class="mobile-link">Para quem</a></li>
-        <li><a href="#junguiana" class="mobile-link">Serviços</a></li>
-        <li><a href="#processo" class="mobile-link">Como funciona</a></li>
-        <li><a href="#horarios" class="mobile-link">Projetos</a></li>
+        <li><a href="#sobre" class="mobile-link">Sobre</a></li>
+        <li><a href="#atendimentos" class="mobile-link">Atendimentos</a></li>
+        <li><a href="#espaco" class="mobile-link">Espaço</a></li>
+        <li><a href="#horarios" class="mobile-link">Horários</a></li>
+        <li><a href="#faq" class="mobile-link">FAQ</a></li>
         <li><a href="#contato" class="mobile-link">Contato</a></li>
-        <li><a href="#contato" class="btn btn--primary mobile-cta js-whatsapp" data-whatsapp-message="Olá! Gostaria de entender melhor os serviços do Espaço Erika Espíndola e verificar qual acompanhamento faz mais sentido para minha necessidade." target="_blank" rel="noopener noreferrer">Falar pelo WhatsApp</a></li>
+        <li>
+          <a href="#contato"
+             class="btn btn--primary mobile-cta js-whatsapp"
+             data-whatsapp-message="Olá, gostaria de agendar uma conversa."
+             target="_blank" rel="noopener noreferrer">
+            Agendar conversa
+          </a>
+        </li>
       </ul>
     </nav>
   </header>
 
   <main>
+
+    <!-- ========== HERO ========== -->
     <section class="hero" id="inicio" aria-label="Boas-vindas">
       <div class="hero__bg-shape" aria-hidden="true"></div>
+
       <div class="hero__inner">
         <div class="hero__text reveal-left">
-          <p class="hero__tag">Acolhimento emocional • desenvolvimento humano • cuidado integrado</p>
-          <h1 class="hero__title">Um espaço de acolhimento e desenvolvimento emocional para crianças, adolescentes, mulheres e famílias.</h1>
-          <p class="hero__sub">Atendimentos, avaliações, acompanhamento infantil e oficinas terapêuticas em um ambiente humanizado, seguro e pensado para cuidar de cada história com sensibilidade, respeito e direção.</p>
+          <p class="hero__tag">Abordagem junguiana</p>
+          <h1 class="hero__title">
+            Um espaço de<br />
+            <em>acolhimento, escuta</em><br />
+            e autoconhecimento.
+          </h1>
+          <p class="hero__sub">
+            Atendimento presencial em Goiânia<br />
+            e online para todo o Brasil.
+          </p>
           <div class="hero__actions">
-            <a href="#junguiana" class="btn btn--ghost">Conhecer os serviços</a>
-            <a href="#contato" class="btn btn--primary js-whatsapp" data-whatsapp-message="Olá! Gostaria de entender melhor os serviços do Espaço Erika Espíndola e verificar qual acompanhamento faz mais sentido para minha necessidade." target="_blank" rel="noopener noreferrer">Falar pelo WhatsApp</a>
+            <a href="#contato"
+               class="btn btn--primary js-whatsapp"
+               data-whatsapp-message="Olá, gostaria de agendar uma conversa."
+               target="_blank" rel="noopener noreferrer"
+               aria-label="Agendar pelo WhatsApp">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              Agendar pelo WhatsApp
+            </a>
+            <a href="#sobre" class="btn btn--ghost">Conhecer meu trabalho</a>
           </div>
         </div>
+
         <div class="hero__image-wrap reveal-right">
           <div class="hero__image-blob" aria-hidden="true"></div>
-          <img src="assets/img/erika-hero.jpg" alt="Erika Espíndola no Espaço Erika Espíndola" class="hero__img" loading="eager" width="560" height="760" />
+          <img src="assets/img/erika-hero.jpg"
+               alt="Erika Espíndola, terapeuta junguiana, sorrindo"
+               class="hero__img"
+               loading="eager"
+               width="560" height="760" />
         </div>
       </div>
-      <div class="hero__scroll-hint" aria-hidden="true"><span></span></div>
+
+      <div class="hero__scroll-hint" aria-hidden="true">
+        <span></span>
+      </div>
     </section>
 
+    <!-- ========== SOBRE MEU TRABALHO ========== -->
     <section class="trabalho section" id="sobre" aria-labelledby="sobre-heading">
       <div class="container">
-        <div class="section-label reveal">Nosso espaço</div>
-        <h2 class="section-title reveal" id="sobre-heading">Um espaço criado para acolher, orientar e desenvolver.</h2>
-        <div class="trabalho__grid cms-two-col">
+
+        <div class="section-label reveal">Sobre meu trabalho</div>
+        <h2 class="section-title reveal" id="sobre-heading">
+          Cada pessoa carrega histórias,<br /><em>dores e potenciais únicos.</em>
+        </h2>
+
+        <div class="trabalho__grid">
           <div class="trabalho__text reveal">
-            <p>O Espaço Erika Espíndola nasce do desejo de construir um ambiente acolhedor, sensível e humanizado, onde crianças, adolescentes, mulheres e famílias possam encontrar escuta, orientação e desenvolvimento emocional.</p>
-            <p>Mais do que atendimentos, acreditamos na construção de vínculos, no cuidado respeitoso e em experiências que favoreçam pertencimento, expressão emocional e crescimento humano.</p>
-            <p>Cada pessoa é recebida com atenção à sua história, necessidades e tempo, integrando diferentes formas de cuidado em um espaço seguro, leve e acolhedor.</p>
-          </div>
-          <div class="espaco__gallery cms-space-gallery reveal-right" aria-label="Fotos do Espaço Erika Espíndola">
-            <div class="espaco__main cms-image-card">
-              <img src="assets/img/espaco-consultorio.jpg" alt="Espaço de atendimento acolhedor" loading="lazy" width="600" height="800" />
+            <p>O primeiro passo do nosso encontro é a <strong>entrevista inicial</strong> — um momento de escuta e acolhimento para compreender suas necessidades, expectativas e trajetória de vida. Essa sessão tem duração aproximada de 50 minutos e é fundamental para que possamos construir juntos o caminho terapêutico.</p>
+            <p>A partir daí, iniciamos os <strong>atendimentos terapêuticos</strong>, que podem abordar questões emocionais e relacionais, processos de autoconhecimento e transformação pessoal.</p>
+            <p>Minha prática é guiada pela <strong>abordagem junguiana</strong>, que valoriza símbolos, sonhos e experiências como ferramentas de autodescoberta e desenvolvimento.</p>
+
+            <div class="trabalho__modality">
+              <div class="modality-item">
+                <div class="modality-icon" aria-hidden="true">
+                  <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
+                </div>
+                <div>
+                  <strong>Presencial</strong>
+                  <span>Goiânia — GO</span>
+                </div>
+              </div>
+              <div class="modality-item">
+                <div class="modality-icon" aria-hidden="true">
+                  <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0H3"/></svg>
+                </div>
+                <div>
+                  <strong>Online</strong>
+                  <span>Para todo o Brasil</span>
+                </div>
+              </div>
             </div>
-            <div class="espaco__side">
-              <div class="espaco__side-img">
-                <img src="assets/img/espaco-jardim.jpg" alt="Área externa do espaço" loading="lazy" width="400" height="400" />
-              </div>
-              <div class="espaco__side-img">
-                <img src="assets/img/espaco-sala.jpg" alt="Sala do espaço terapêutico" loading="lazy" width="400" height="400" />
-              </div>
+          </div>
+
+          <div class="trabalho__cards reveal">
+            <div class="trabalho__card">
+              <h3>Questões emocionais</h3>
+              <p>Ansiedade, angústia, insegurança e medos que impactam o dia a dia.</p>
+            </div>
+            <div class="trabalho__card">
+              <h3>Relacionamentos e vínculos</h3>
+              <p>Padrões relacionais, vínculos afetivos e dinâmicas interpessoais.</p>
+            </div>
+            <div class="trabalho__card">
+              <h3>Autoconhecimento</h3>
+              <p>Desenvolvimento pessoal e compreensão mais profunda de si mesmo.</p>
+            </div>
+            <div class="trabalho__card">
+              <h3>Transformação e crises</h3>
+              <p>Atravessar momentos difíceis e encontrar novos caminhos de vida.</p>
             </div>
           </div>
         </div>
       </div>
     </section>
 
+    <!-- ========== ÁREAS DE ATENDIMENTO ========== -->
     <section class="atendimentos section" id="atendimentos" aria-labelledby="atend-heading">
       <div class="container">
-        <div class="section-label reveal">Para quem é o espaço</div>
-        <h2 class="section-title reveal" id="atend-heading">Para quem busca cuidado, direção e acolhimento.</h2>
-        <div class="atendimentos__grid">
-          <div class="atend-card reveal"><h3>Crianças</h3><p>Acompanhamento do desenvolvimento, expressão emocional, suporte às demandas comportamentais e atividades que favorecem vínculo, autonomia e comunicação.</p></div>
-          <div class="atend-card reveal"><h3>Adolescentes</h3><p>Escuta, orientação e apoio em fases de mudança, inseguranças, relações, emoções intensas e construção de identidade.</p></div>
-          <div class="atend-card reveal"><h3>Mulheres</h3><p>Acolhimento para mulheres sobrecarregadas, mães, profissionais e pessoas que sentem que têm cuidado de tudo, menos de si.</p></div>
-          <div class="atend-card reveal"><h3>Famílias</h3><p>Orientação, devolutivas, escuta familiar e construção de caminhos possíveis para apoiar o desenvolvimento emocional e relacional.</p></div>
+        <div class="section-label reveal">Áreas de atendimento</div>
+        <h2 class="section-title reveal" id="atend-heading">
+          O que podemos<br /><em>trabalhar juntos</em>
+        </h2>
+
+        <div class="atend-grid">
+          <div class="atend-card reveal">
+            <div class="atend-card__icon" aria-hidden="true">
+              <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/></svg>
+            </div>
+            <h3>Ansiedade</h3>
+            <p>Identificar padrões, acolher a angústia e desenvolver recursos internos.</p>
+          </div>
+          <div class="atend-card reveal">
+            <div class="atend-card__icon" aria-hidden="true">
+              <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></svg>
+            </div>
+            <h3>Angústia e medos</h3>
+            <p>Compreender a origem e encontrar formas de atravessar o que pesa.</p>
+          </div>
+          <div class="atend-card reveal">
+            <div class="atend-card__icon" aria-hidden="true">
+              <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
+            </div>
+            <h3>Insegurança</h3>
+            <p>Fortalecer a autoconfiança e a conexão com os próprios valores.</p>
+          </div>
+          <div class="atend-card reveal">
+            <div class="atend-card__icon" aria-hidden="true">
+              <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z"/></svg>
+            </div>
+            <h3>Relacionamentos</h3>
+            <p>Explorar dinâmicas afetivas, vínculos e padrões que se repetem.</p>
+          </div>
+          <div class="atend-card reveal">
+            <div class="atend-card__icon" aria-hidden="true">
+              <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.383a14.406 14.406 0 01-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 10-7.517 0c.85.493 1.509 1.333 1.509 2.316V18"/></svg>
+            </div>
+            <h3>Autoconhecimento</h3>
+            <p>Aprofundar a compreensão de si mesmo, seus desejos e potenciais.</p>
+          </div>
+          <div class="atend-card reveal">
+            <div class="atend-card__icon" aria-hidden="true">
+              <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.438 60.438 0 00-.491 6.347A48.62 48.62 0 0112 20.904a48.62 48.62 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.636 50.636 0 00-2.658-.813A59.906 59.906 0 0112 3.493a59.903 59.903 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5"/></svg>
+            </div>
+            <h3>Desenvolvimento pessoal</h3>
+            <p>Ressignificar experiências e construir uma vida com mais sentido.</p>
+          </div>
+          <div class="atend-card reveal">
+            <div class="atend-card__icon" aria-hidden="true">
+              <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/></svg>
+            </div>
+            <h3>Enfrentamento de crises</h3>
+            <p>Apoio para atravessar momentos de ruptura, luto e transições.</p>
+          </div>
+          <div class="atend-card reveal">
+            <div class="atend-card__icon" aria-hidden="true">
+              <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/></svg>
+            </div>
+            <h3>Transformação pessoal</h3>
+            <p>Processos de mudança profunda e reconexão com sua essência.</p>
+          </div>
         </div>
       </div>
     </section>
 
+    <!-- ========== PSICOLOGIA JUNGUIANA ========== -->
     <section class="junguiana section" id="junguiana" aria-labelledby="jung-heading">
       <div class="junguiana__bg" aria-hidden="true"></div>
-      <div class="container">
-        <div class="section-label reveal">Nossos serviços</div>
-        <h2 class="section-title reveal" id="jung-heading">Cuidado integrado para diferentes momentos e necessidades.</h2>
-        <div class="cms-services-grid">
-          <div class="trabalho__card service-card reveal"><h3>Avaliação Psicológica e Neuropsicológica</h3><p>Avaliações conduzidas por profissional habilitada, auxiliando na compreensão do funcionamento emocional, cognitivo e comportamental de crianças, adolescentes e adultos.</p><p><strong>Indicado para:</strong> dificuldades de aprendizagem; alterações no desenvolvimento; questões emocionais e comportamentais; orientação escolar e familiar; necessidade de laudos e relatórios técnicos.</p></div>
-          <div class="trabalho__card service-card reveal"><h3>Atendimento Psicológico</h3><p>Atendimento realizado com escuta ética, acolhedora e individualizada, voltado à compreensão das emoções, relações, conflitos internos e processos de desenvolvimento pessoal.</p><p><strong>Indicado para:</strong> ansiedade; insegurança; conflitos emocionais; relacionamentos; fases de transição; sofrimento emocional.</p></div>
-          <div class="trabalho__card service-card reveal"><h3>Acompanhamento Infantil • ABA • AT</h3><p>Acompanhamento voltado ao desenvolvimento infantil, com apoio individualizado, atividades direcionadas, estímulo à autonomia, comunicação, interação social e organização comportamental.</p><p><strong>Indicado para:</strong> atrasos no desenvolvimento; suporte comportamental; habilidades sociais; rotina e autonomia; acompanhamento terapêutico.</p></div>
-          <div class="trabalho__card service-card reveal"><h3>Oficinas Terapêuticas e Emocionais</h3><p>Experiências em grupo que utilizam recursos expressivos, criativos e relacionais para trabalhar emoções, vínculos, autoestima, pertencimento e desenvolvimento humano.</p><p><strong>Possíveis oficinas:</strong> Oficina das Emoções; Oficina de Pintura e Expressão; Grupo para Mulheres; Grupo de Adolescentes; Oficina Mães e Filhos; Vivências de Autoconhecimento.</p></div>
-          <div class="trabalho__card service-card reveal"><h3>Orientação Familiar</h3><p>Encontros voltados à escuta da família, compreensão das demandas e construção de estratégias de cuidado, vínculo, rotina e acompanhamento do desenvolvimento.</p><p><strong>Indicado para:</strong> famílias em processo de avaliação; pais que se sentem perdidos; mães sobrecarregadas; alinhamento entre escola, família e acompanhamento.</p></div>
+      <div class="container junguiana__inner">
+        <div class="junguiana__image reveal-left">
+          <img src="assets/img/decorativo-agua.png"
+               alt="Mãos recebendo água, símbolo de fluxo e transformação"
+               loading="lazy"
+               width="370" height="500" />
+        </div>
+        <div class="junguiana__text reveal-right">
+          <div class="section-label">Abordagem</div>
+          <h2 class="section-title" id="jung-heading">
+            Abordagem<br /><em>Junguiana</em>
+          </h2>
+          <p>Desenvolvida por Carl Gustav Jung, essa abordagem compreende o ser humano em sua totalidade — consciente e inconsciente, razão e emoção, luz e sombra.</p>
+          <p>No atendimento terapêutico, <strong>símbolos, sonhos e vivências</strong> tornam-se pontes para o autoconhecimento. Não se trata de encontrar respostas prontas, mas de aprofundar a escuta de si mesmo.</p>
+          <p>Cada pessoa é única em sua história, e o processo se constrói de forma singular, respeitando seu tempo, suas dores e seus potenciais.</p>
+          <div class="jung-pillars">
+            <div class="jung-pillar">
+              <span>Símbolos</span>
+            </div>
+            <div class="jung-pillar">
+              <span>Sonhos</span>
+            </div>
+            <div class="jung-pillar">
+              <span>Inconsciente</span>
+            </div>
+            <div class="jung-pillar">
+              <span>Autoconhecimento</span>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
+    <!-- ========== CONHEÇA MEU ESPAÇO ========== -->
+    <section class="espaco section" id="espaco" aria-labelledby="espaco-heading">
+      <div class="container">
+        <div class="section-label reveal">Conheça meu espaço</div>
+        <h2 class="section-title reveal" id="espaco-heading">
+          Um ambiente pensado<br /><em>para você se sentir em casa</em>
+        </h2>
+        <p class="section-sub reveal">O consultório foi planejado para oferecer calma, acolhimento e sigilo — um lugar onde você pode falar sobre o que carrega com segurança e leveza.</p>
+
+        <div class="espaco__gallery">
+          <div class="espaco__main reveal-left">
+            <img src="assets/img/espaco-consultorio.jpg"
+                 alt="Sala de atendimento aconchegante com poltronas cinza e plantas"
+                 loading="lazy"
+                 width="600" height="800" />
+          </div>
+          <div class="espaco__side">
+            <div class="espaco__side-img reveal">
+              <img src="assets/img/espaco-jardim.jpg"
+                   alt="Espaço externo com jardim e cobertura de palha, ambiente natural e sereno"
+                   loading="lazy"
+                   width="400" height="400" />
+            </div>
+            <div class="espaco__side-img reveal">
+              <img src="assets/img/espaco-sala.jpg"
+                   alt="Ambiente interno amplo com pintura de bambu e iluminação natural"
+                   loading="lazy"
+                   width="400" height="400" />
+            </div>
+          </div>
+        </div>
+
+        <div class="espaco__values">
+          <div class="espaco__value reveal">
+            <div class="espaco__value-line" aria-hidden="true"></div>
+            <h3>Calma</h3>
+            <p>Ambiente pensado para desacelerar e se conectar consigo mesmo.</p>
+          </div>
+          <div class="espaco__value reveal">
+            <div class="espaco__value-line" aria-hidden="true"></div>
+            <h3>Acolhimento</h3>
+            <p>Um espaço que recebe sua história sem julgamentos.</p>
+          </div>
+          <div class="espaco__value reveal">
+            <div class="espaco__value-line" aria-hidden="true"></div>
+            <h3>Sigilo</h3>
+            <p>Total confidencialidade, respeitando princípios éticos e limites legais aplicáveis.</p>
+          </div>
+          <div class="espaco__value reveal">
+            <div class="espaco__value-line" aria-hidden="true"></div>
+            <h3>Segurança</h3>
+            <p>Um ambiente seguro para falar sobre o que carrega.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== COMO FUNCIONA ========== -->
     <section class="processo section" id="processo" aria-labelledby="proc-heading">
       <div class="container">
         <div class="section-label reveal">Como funciona</div>
-        <h2 class="section-title reveal" id="proc-heading">Como começa o cuidado</h2>
+        <h2 class="section-title reveal" id="proc-heading">
+          O caminho do<br /><em>nosso encontro</em>
+        </h2>
+
         <div class="timeline">
-          <div class="timeline__item reveal"><div class="timeline__num">1</div><h3>Primeiro contato</h3><p>A pessoa ou família entra em contato pelo WhatsApp para compartilhar brevemente sua demanda.</p></div>
-          <div class="timeline__item reveal"><div class="timeline__num">2</div><h3>Acolhimento inicial</h3><p>Realizamos uma escuta inicial para compreender a necessidade e indicar o melhor caminho dentro do espaço.</p></div>
-          <div class="timeline__item reveal"><div class="timeline__num">3</div><h3>Direcionamento</h3><p>A demanda pode ser encaminhada para avaliação, atendimento psicológico, acompanhamento infantil, oficinas ou orientação familiar.</p></div>
-          <div class="timeline__item reveal"><div class="timeline__num">4</div><h3>Plano de cuidado</h3><p>A equipe organiza a melhor forma de acompanhamento, respeitando o momento, contexto e necessidade de cada pessoa.</p></div>
-          <div class="timeline__item reveal"><div class="timeline__num">5</div><h3>Acompanhamento</h3><p>O processo acontece de forma humanizada, com cuidado, devolutivas e acompanhamento contínuo quando necessário.</p></div>
+          <div class="timeline__item reveal">
+            <div class="timeline__num" aria-hidden="true">01</div>
+            <div class="timeline__content">
+              <h3>Primeiro contato</h3>
+              <p>Você entra em contato pelo WhatsApp para tirar dúvidas iniciais e verificar disponibilidade de agenda.</p>
+            </div>
+          </div>
+          <div class="timeline__item reveal">
+            <div class="timeline__num" aria-hidden="true">02</div>
+            <div class="timeline__content">
+              <h3>Entrevista inicial</h3>
+              <p>Nossa primeira sessão — um momento de escuta acolhedora para compreender sua história, necessidades e expectativas.</p>
+            </div>
+          </div>
+          <div class="timeline__item reveal">
+            <div class="timeline__num" aria-hidden="true">03</div>
+            <div class="timeline__content">
+              <h3>Compreensão da demanda</h3>
+              <p>Juntos, identificamos o que está pesando e como o atendimento terapêutico pode apoiar sua trajetória.</p>
+            </div>
+          </div>
+          <div class="timeline__item reveal">
+            <div class="timeline__num" aria-hidden="true">04</div>
+            <div class="timeline__content">
+              <h3>Atendimento terapêutico</h3>
+              <p>Sessões semanais de 50 minutos, construídas de forma singular para cada pessoa, respeitando seu ritmo.</p>
+            </div>
+          </div>
+          <div class="timeline__item reveal">
+            <div class="timeline__num" aria-hidden="true">05</div>
+            <div class="timeline__content">
+              <h3>Acompanhamento contínuo</h3>
+              <p>O processo evolui junto com você — com espaço para revisitar e aprofundar o que surge ao longo do caminho.</p>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
+    <!-- ========== HORÁRIOS E VALORES ========== -->
     <section class="horarios section" id="horarios" aria-labelledby="hor-heading">
       <div class="container">
-        <div class="section-label reveal">Projetos e oficinas</div>
-        <h2 class="section-title reveal" id="hor-heading">Projetos criados para fortalecer vínculos, expressão e pertencimento.</h2>
-        <div class="horarios__cards cms-oficinas-grid">
-          <div class="horario-card reveal"><h3>Oficina das Emoções</h3><p>Atividades lúdicas e expressivas para ajudar crianças a compreenderem, nomearem e expressarem emoções de forma saudável.</p></div>
-          <div class="horario-card reveal"><h3>Roda de Acolhimento para Mulheres</h3><p>Um espaço de escuta, partilha e acolhimento para mulheres emocionalmente sobrecarregadas, mães e profissionais que sentem dificuldade em cuidar de si.</p></div>
-          <div class="horario-card reveal"><h3>Grupo de Adolescentes</h3><p>Espaço voltado ao diálogo, expressão emocional, pertencimento, autoestima e construção de identidade.</p></div>
-          <div class="horario-card reveal"><h3>Oficina Mães e Filhos</h3><p>Vivências criadas para fortalecer vínculo, comunicação afetiva e presença emocional entre mães e crianças.</p></div>
+        <div class="horarios__inner">
+          <div class="horarios__text reveal-left">
+            <div class="section-label">Horários e valores</div>
+            <h2 class="section-title" id="hor-heading">
+              Disponibilidade<br /><em>e formas de atendimento</em>
+            </h2>
+            <div class="horarios__schedule">
+              <div class="schedule-row">
+                <span class="schedule-label">Dias</span>
+                <span class="schedule-value">Segunda a sábado</span>
+              </div>
+              <div class="schedule-row">
+                <span class="schedule-label">Horários</span>
+                <span class="schedule-value">08h às 19h</span>
+              </div>
+              <div class="schedule-row">
+                <span class="schedule-label">Duração</span>
+                <span class="schedule-value">50 minutos por sessão</span>
+              </div>
+              <div class="schedule-row">
+                <span class="schedule-label">Frequência</span>
+                <span class="schedule-value">1 vez por semana</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="horarios__cards reveal-right">
+            <div class="valor-card">
+              <h3>Sessão avulsa</h3>
+              <p>Valor individual por atendimento, ideal para quem está começando ou tem demanda pontual.</p>
+              <div class="valor-divider" aria-hidden="true"></div>
+              <p class="valor-cta-text">Consulte disponibilidade e valores pelo WhatsApp.</p>
+            </div>
+            <div class="valor-card">
+              <h3>Pacote mensal</h3>
+              <p>Valor reduzido por mês para quem opta pelo processo contínuo e frequência semanal.</p>
+              <div class="valor-divider" aria-hidden="true"></div>
+              <p class="valor-cta-text">Consulte disponibilidade e valores pelo WhatsApp.</p>
+            </div>
+
+            <div class="pagamento">
+              <p class="pagamento__label">Formas de pagamento</p>
+              <div class="pagamento__methods">
+                <span>PIX</span>
+                <span>Transferência</span>
+                <span>Cartão</span>
+              </div>
+            </div>
+
+            <a href="#contato"
+               class="btn btn--primary js-whatsapp"
+               data-whatsapp-message="Olá, gostaria de saber os valores e disponibilidade de agenda."
+               target="_blank" rel="noopener noreferrer">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              Consultar pelo WhatsApp
+            </a>
+          </div>
         </div>
       </div>
     </section>
 
+    <!-- ========== EXPERIÊNCIA ========== -->
     <section class="experiencia section" id="experiencia" aria-labelledby="exp-heading">
       <div class="container experiencia__inner">
-        <div class="experiencia__image reveal-left"><img src="assets/img/erika-experiencia.jpg" alt="Erika Espíndola em ambiente profissional" loading="lazy" width="420" height="560" /><div class="experiencia__image-frame" aria-hidden="true"></div></div>
+        <div class="experiencia__image reveal-left">
+          <img src="assets/img/erika-experiencia.jpg"
+               alt="Erika Espíndola em traje profissional branco"
+               loading="lazy"
+               width="420" height="560" />
+          <div class="experiencia__image-frame" aria-hidden="true"></div>
+        </div>
         <div class="experiencia__text reveal-right">
-          <div class="section-label">Diferenciais</div>
-          <h2 class="section-title" id="exp-heading">Mais do que atendimentos, acreditamos em cuidado com presença.</h2>
-          <ul class="cms-diferenciais"><li>ambiente acolhedor e humanizado;</li><li>cuidado integrado;</li><li>escuta individualizada;</li><li>atenção à singularidade de cada pessoa;</li><li>experiências emocionais e oficinas;</li><li>suporte às famílias;</li><li>acolhimento respeitoso e sensível.</li></ul>
+          <div class="section-label">Minha experiência</div>
+          <h2 class="section-title" id="exp-heading">
+            Uma prática<br /><em>fundamentada e humana</em>
+          </h2>
+          <p>Sou terapeuta com <strong>abordagem junguiana</strong> e atuação em atendimento terapêutico individual.</p>
+          <p>Minha prática busca compreender símbolos, sonhos e vivências como caminhos de <strong>autoconhecimento e transformação pessoal</strong>.</p>
+          <p>Trago em cada atendimento o compromisso de oferecer um <strong>espaço seguro, ético e acolhedor</strong>, no qual cada pessoa possa se sentir respeitada em sua singularidade e apoiada em seu processo de desenvolvimento pessoal.</p>
+          <div class="exp-divider" aria-hidden="true"></div>
+          <a href="#contato" class="btn btn--outline">Quero começar</a>
         </div>
       </div>
     </section>
 
+    <!-- ========== FAQ ========== -->
+    <section class="faq section" id="faq" aria-labelledby="faq-heading">
+      <div class="container">
+        <div class="section-label reveal">Perguntas frequentes</div>
+        <h2 class="section-title reveal" id="faq-heading">
+          Ainda tem<br /><em>dúvidas?</em>
+        </h2>
+
+        <div class="faq__list" role="list">
+
+          <div class="faq__item reveal" role="listitem">
+            <button class="faq__question" aria-expanded="false" aria-controls="faq1">
+              Como funciona a primeira sessão?
+              <span class="faq__icon" aria-hidden="true"></span>
+            </button>
+            <div class="faq__answer" id="faq1" hidden>
+              <p>A primeira sessão é a entrevista inicial — um momento de escuta, sem julgamentos. Você compartilha o que quiser sobre sua trajetória, necessidades e expectativas. Essa conversa tem duração de aproximadamente 50 minutos e é fundamental para construirmos juntos o caminho terapêutico mais adequado para você.</p>
+            </div>
+          </div>
+
+          <div class="faq__item reveal" role="listitem">
+            <button class="faq__question" aria-expanded="false" aria-controls="faq2">
+              O atendimento online funciona bem?
+              <span class="faq__icon" aria-hidden="true"></span>
+            </button>
+            <div class="faq__answer" id="faq2" hidden>
+              <p>Sim. O atendimento online pode ser uma alternativa adequada para muitas pessoas e é realizado por videochamada em plataformas seguras. Você pode fazer sua sessão de onde estiver — de casa, do trabalho ou de qualquer lugar no Brasil. O sigilo e a qualidade do vínculo terapêutico são preservados.</p>
+            </div>
+          </div>
+
+          <div class="faq__item reveal" role="listitem">
+            <button class="faq__question" aria-expanded="false" aria-controls="faq3">
+              Quanto tempo dura cada sessão?
+              <span class="faq__icon" aria-hidden="true"></span>
+            </button>
+            <div class="faq__answer" id="faq3" hidden>
+              <p>Os encontros têm duração aproximada de 50 minutos. Esse tempo favorece uma escuta cuidadosa e consistente a cada atendimento.</p>
+            </div>
+          </div>
+
+          <div class="faq__item reveal" role="listitem">
+            <button class="faq__question" aria-expanded="false" aria-controls="faq4">
+              Qual a frequência ideal de atendimento?
+              <span class="faq__icon" aria-hidden="true"></span>
+            </button>
+            <div class="faq__answer" id="faq4" hidden>
+              <p>A frequência costuma ser semanal. Esse ritmo favorece continuidade, vínculo e aprofundamento do processo de autoconhecimento.</p>
+            </div>
+          </div>
+
+          <div class="faq__item reveal" role="listitem">
+            <button class="faq__question" aria-expanded="false" aria-controls="faq5">
+              O atendimento é sigiloso?
+              <span class="faq__icon" aria-hidden="true"></span>
+            </button>
+            <div class="faq__answer" id="faq5" hidden>
+              <p>Sim. O sigilo é um princípio fundamental do atendimento terapêutico. Tudo o que você compartilhar é tratado com confidencialidade, dentro dos limites legais e éticos aplicáveis. Você pode falar com liberdade e segurança.</p>
+            </div>
+          </div>
+
+          <div class="faq__item reveal" role="listitem">
+            <button class="faq__question" aria-expanded="false" aria-controls="faq6">
+              Como funciona o agendamento?
+              <span class="faq__icon" aria-hidden="true"></span>
+            </button>
+            <div class="faq__answer" id="faq6" hidden>
+              <p>O agendamento é feito pelo WhatsApp. Você entra em contato, verificamos a disponibilidade de agenda e combinamos dia, horário e modalidade (presencial ou online). Simples e sem burocracia.</p>
+            </div>
+          </div>
+
+          <div class="faq__item reveal" role="listitem">
+            <button class="faq__question" aria-expanded="false" aria-controls="faq7">
+              Quais formas de pagamento são aceitas?
+              <span class="faq__icon" aria-hidden="true"></span>
+            </button>
+            <div class="faq__answer" id="faq7" hidden>
+              <p>São aceitos PIX, transferência bancária e cartão de crédito ou débito. Para saber os valores e condições detalhadas, entre em contato pelo WhatsApp.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== CONTATO ========== -->
     <section class="contato section" id="contato" aria-labelledby="contato-heading">
       <div class="container">
-        <h2 class="section-title reveal" id="contato-heading">Você não precisa atravessar tudo sozinho.</h2>
-        <p class="section-sub reveal">Se você sente que precisa de acolhimento, orientação ou um espaço seguro para cuidar de si ou de alguém da sua família, entre em contato. Vamos entender sua necessidade e indicar o melhor caminho.</p>
+        <div class="section-label reveal">Contato</div>
+        <h2 class="section-title reveal" id="contato-heading">
+          Vamos<br /><em>conversar?</em>
+        </h2>
+        <p class="section-sub reveal">Dar o primeiro passo é o mais importante. Entre em contato e vamos encontrar o melhor caminho para você.</p>
+
         <div class="contato__inner">
           <div class="contato__info reveal-left">
-            <div class="contato__card"><div class="contato__icon" aria-hidden="true">✦</div><div><h3>WhatsApp</h3><p>Envie uma mensagem para entender qual acompanhamento faz mais sentido para sua necessidade.</p><a href="#contato" target="_blank" rel="noopener noreferrer" class="contato__link js-whatsapp" data-whatsapp-message="Olá! Gostaria de entender melhor os serviços do Espaço Erika Espíndola e verificar qual acompanhamento faz mais sentido para minha necessidade.">Falar pelo WhatsApp</a></div></div>
+            <div class="contato__card">
+              <div class="contato__icon" aria-hidden="true">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              </div>
+              <div>
+                <h3>WhatsApp</h3>
+                <p>Agendamento e dúvidas pelo WhatsApp. Respondo com agilidade durante o horário de atendimento.</p>
+                <a href="#contato" target="_blank" rel="noopener noreferrer" class="contato__link js-whatsapp" data-whatsapp-message="Olá, gostaria de falar com a Erika.">Enviar mensagem</a>
+              </div>
+            </div>
+
+            <div class="contato__card">
+              <div class="contato__icon" aria-hidden="true">
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
+              </div>
+              <div>
+                <h3>Localização</h3>
+                <p>Consultório presencial em Goiânia — GO. Endereço completo informado após o agendamento.</p>
+              </div>
+            </div>
+
+            <div class="contato__card">
+              <div class="contato__icon" aria-hidden="true">
+                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0H3"/></svg>
+              </div>
+              <div>
+                <h3>Atendimento online</h3>
+                <p>Para todo o Brasil, por videochamada segura e com a mesma qualidade do presencial.</p>
+              </div>
+            </div>
           </div>
+
           <div class="contato__form-wrap reveal-right">
             <form class="contato__form" id="contactForm" novalidate>
-              <h3>Enviar uma mensagem</h3><p class="form-sub">O envio abrirá o WhatsApp com sua mensagem preenchida.</p>
-              <div class="form-group"><label for="nome">Nome</label><input type="text" id="nome" name="nome" placeholder="Como prefere ser chamado(a)?" autocomplete="given-name" required /><span class="form-error" id="nome-error" role="alert"></span></div>
-              <div class="form-group"><label for="telefone">WhatsApp</label><input type="tel" id="telefone" name="telefone" placeholder="(00) 00000-0000" autocomplete="tel" required /><span class="form-error" id="telefone-error" role="alert"></span></div>
-              <div class="form-group"><label for="tipo">O que você busca?</label><select id="tipo" name="tipo" required><option value="">Selecione</option><option>Avaliação Psicológica e Neuropsicológica</option><option>Atendimento Psicológico</option><option>Acompanhamento Infantil • ABA • AT</option><option>Oficinas Terapêuticas e Emocionais</option><option>Orientação Familiar</option></select><span class="form-error" id="tipo-error" role="alert"></span></div>
-              <div class="form-group"><label for="mensagem">Mensagem</label><textarea id="mensagem" name="mensagem" placeholder="Conte um pouco sobre o que está buscando..." rows="4"></textarea></div>
-              <button type="submit" class="btn btn--primary form-btn" id="submitBtn"><span class="btn-text">Falar pelo WhatsApp</span></button><p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
+              <h3>Enviar uma mensagem</h3>
+              <p class="form-sub">O envio abrirá o WhatsApp com sua mensagem preenchida.</p>
+
+              <div class="form-group">
+                <label for="nome">Seu nome</label>
+                <input type="text" id="nome" name="nome" placeholder="Como prefere ser chamado(a)?" autocomplete="given-name" required />
+                <span class="form-error" id="nome-error" role="alert"></span>
+              </div>
+
+              <div class="form-group">
+                <label for="telefone">WhatsApp</label>
+                <input type="tel" id="telefone" name="telefone" placeholder="(00) 00000-0000" autocomplete="tel" required />
+                <span class="form-error" id="telefone-error" role="alert"></span>
+              </div>
+
+              <div class="form-group">
+                <label for="tipo">Tipo de atendimento</label>
+                <select id="tipo" name="tipo" required>
+                  <option value="" disabled selected>Selecione</option>
+                  <option value="Presencial">Presencial — Goiânia</option>
+                  <option value="Online">Online — Brasil</option>
+                  <option value="Dúvida">Tenho uma dúvida</option>
+                </select>
+                <span class="form-error" id="tipo-error" role="alert"></span>
+              </div>
+
+              <div class="form-group">
+                <label for="mensagem">Mensagem (opcional)</label>
+                <textarea id="mensagem" name="mensagem" placeholder="Conte um pouco sobre o que está buscando..." rows="4"></textarea>
+              </div>
+
+              <button type="submit" class="btn btn--primary form-btn" id="submitBtn">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                <span class="btn-text">Enviar pelo WhatsApp</span>
+              </button>
+              <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
             </form>
           </div>
         </div>
       </div>
     </section>
+
   </main>
 
-  <footer class="footer"><div class="container footer__inner"><p class="footer__crp">Espaço Erika Espíndola</p><p class="footer__tagline">acolhimento emocional • desenvolvimento humano • cuidado integrado</p><p class="footer__reach">Atendimento para crianças, adolescentes, mulheres e famílias</p><p class="footer__copy">© 2026 Espaço Erika Espíndola. Todos os direitos reservados.</p><p class="footer__dev">Desenvolvido por Mauricio • <a href="https://wa.me/5546991285484" target="_blank" rel="noopener noreferrer">WhatsApp: (46) 99128-5484</a></p></div></footer>
-  <a href="#contato" class="wa-float js-whatsapp" data-whatsapp-message="Olá! Gostaria de entender melhor os serviços do Espaço Erika Espíndola e verificar qual acompanhamento faz mais sentido para minha necessidade." target="_blank" rel="noopener noreferrer" aria-label="Falar pelo WhatsApp">WhatsApp</a>
+  <!-- ========== FOOTER ========== -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer__top">
+        <div class="footer__brand">
+          <p class="footer__name">Erika Espíndola</p>
+          <p class="footer__crp">Terapeuta — Goiânia, GO</p>
+          <p class="footer__tagline">Terapeuta com abordagem junguiana</p>
+          <p class="footer__reach">Atendimento online para todo o Brasil</p>
+        </div>
 
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-  <script src="firebase-config.js"></script>
-  <script src="cms-defaults.js"></script>
+        <nav class="footer__nav" aria-label="Links do rodapé">
+          <ul>
+            <li><a href="#inicio">Início</a></li>
+            <li><a href="#sobre">Sobre</a></li>
+            <li><a href="#atendimentos">Atendimentos</a></li>
+            <li><a href="#espaco">Espaço</a></li>
+            <li><a href="#horarios">Horários</a></li>
+            <li><a href="#contato">Contato</a></li>
+          </ul>
+          <ul>
+            <li><a href="privacy.html">Política de Privacidade</a></li>
+            <li><a href="terms.html">Termos de Uso</a></li>
+          </ul>
+        </nav>
+
+        <div class="footer__contact">
+          <a href="#contato" class="footer__wa js-whatsapp" data-whatsapp-message="Olá, gostaria de falar com a Erika." target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            WhatsApp
+          </a>
+        </div>
+      </div>
+
+      <div class="footer__bottom">
+        <p class="footer__ethics">Este site possui caráter informativo e não substitui atendimento emergencial. Em caso de crise, ligue para o CVV: <strong>188</strong>.</p>
+        <div class="footer__credits">
+          <p class="footer__copy">&copy; 2025 Erika Espíndola. Todos os direitos reservados.</p>
+          <p class="footer__dev">desenvolvido por Mauricio whatsapp: 46991285484</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- WhatsApp Floating Button -->
+  <a href="#contato"
+     class="wa-float js-whatsapp"
+     data-whatsapp-message="Olá, gostaria de agendar uma conversa."
+     target="_blank"
+     rel="noopener noreferrer"
+     aria-label="Fale pelo WhatsApp">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    <span class="wa-float__tooltip">Agendar pelo WhatsApp</span>
+  </a>
+
   <script src="script.js"></script>
+  <!-- CMS Loader: aplica conteúdo editado pelo admin ao site público -->
+  <!-- Fallback seguro: se não houver dados salvos, o HTML original prevalece -->
+  <script src="cms-defaults.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js"></script>
   <script src="cms-loader.js"></script>
-  <script src="legal-loader.js"></script>
 </body>
 </html>
